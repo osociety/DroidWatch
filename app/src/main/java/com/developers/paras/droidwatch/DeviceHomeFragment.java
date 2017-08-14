@@ -113,19 +113,6 @@ public class DeviceHomeFragment extends Fragment {
         final TextView device_data = (TextView) v.findViewById(R.id.device_data);
         Button reconnect = (Button) v.findViewById(R.id.reconnect);
 
-        if(!address.equals("00:21:13:00:E0:68"))
-        {
-
-            Toast.makeText(con, "Please Select Device HC-05 with 00:21:13:00:E0:68 for Droid Watch", Toast.LENGTH_LONG).show();
-            //******SENDING CONTROL BACK TO DEVICE LIST*************
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
-            ft.replace(R.id.device_list_layout, new DeviceListFragment());
-            ft.addToBackStack("Stack");
-            ft.commit();
-
-        }
-        else
-        {
 
             //Trying to connect with bluetooth device
             conthread.run();
@@ -184,7 +171,7 @@ public class DeviceHomeFragment extends Fragment {
                 }
             });
 
-        }
+
 
 
     }
