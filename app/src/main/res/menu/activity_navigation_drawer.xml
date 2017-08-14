@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_log"
+            android:icon="@drawable/ic_info_outline_black_24dp"
+            android:title="Logcat" />
+        <item
+            android:id="@+id/nav_bug_report"
+            android:icon="@drawable/ic_bug_report_black_24dp"
+            android:title="Send Bug Report" />
+        <item
+            android:id="@+id/nav_arduino"
+            android:icon="@drawable/ic_memory_black_24dp"
+            android:title="Arduino Guide" />
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/ic_perm_device_information_black_24dp"
+            android:title="About App" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Share" />
+            <item
+                android:id="@+id/nav_feedback"
+                android:icon="@drawable/ic_feedback_black_24dp"
+                android:title="Feedback" />
+            <item
+                android:id="@+id/nav_developer"
+                android:icon="@drawable/ic_developer_board_black_24dp"
+                android:title="Developer" />
+        </menu>
+    </item>
+
+</menu>

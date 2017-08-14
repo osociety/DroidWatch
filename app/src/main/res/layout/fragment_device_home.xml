@@ -1,0 +1,106 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:fillViewport="true"
+    android:layout_height="match_parent"
+    android:background="@drawable/droid_watch_app_background"
+    tools:context="com.developers.paras.droidwatch.DeviceHomeFragment">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="Device: No device"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:id="@+id/device_name"
+            android:textColor="@color/primary_light"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="If you see No device due to some reasons then Disconnect and pair again."
+            android:textSize="20sp"
+            android:textColor="@color/primary_light"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1.5"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:textStyle="bold"
+            android:textColor="@color/primary_light"
+            android:layout_weight="1"
+            android:id="@+id/device_status"
+            android:textSize="20sp"
+            android:layout_marginLeft="10dp"
+            android:text="Status: Connecting...."
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="If the device is not Connected try Reconnecting the device. Make sure the watch is on."
+            android:layout_marginRight="5dp"
+            android:textSize="20sp"
+            android:id="@+id/connect_guide"
+            android:textColor="@color/primary_light"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="2"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:textColor="@color/primary_light"
+            android:layout_weight="1"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:id="@+id/device_data"
+            android:layout_marginLeft="10dp"
+            android:text="Data: Not sending"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="If the device is not sending data then try to reconnect or pair again."
+            android:textSize="20sp"
+            android:layout_marginRight="5dp"
+            android:textColor="@color/primary_light"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1.5"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:layout_weight="3"
+            >
+            <Button
+                android:layout_gravity="bottom"
+                android:text="Reconnect"
+                android:textSize="20dp"
+                android:textColor="@color/primary_light"
+                android:background="@drawable/button"
+                android:id="@+id/reconnect"
+                android:layout_margin="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <Button
+                android:layout_gravity="bottom"
+                android:text="Disconnect"
+                android:textSize="20dp"
+                android:textColor="@color/primary_light"
+                android:background="@drawable/button"
+                android:id="@+id/disconnect"
+                android:layout_margin="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

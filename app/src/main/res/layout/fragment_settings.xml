@@ -1,0 +1,82 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/droid_watch_app_background"
+    tools:context="com.developers.paras.droidwatch.SettingsFragment">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <!-- TODO: Update blank fragment layout -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Settings - Feature Coming soon"
+            android:textColor="@color/primary_light"
+            android:layout_margin="10dp"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            />
+        <Switch
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:textSize="18sp"
+            android:id="@+id/noti"
+            android:textColor="@color/primary_light"
+            android:layout_marginRight="20dp"
+            android:text="Enable notifications"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="25dp"
+            android:textColor="@color/secondary_text"
+            android:layout_marginRight="60dp"
+            android:text="@string/notification"/>
+
+        <Switch
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Vibrations"
+            android:textSize="18sp"
+            android:id="@+id/vib"
+            android:textColor="@color/primary_light"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="25dp"
+            android:textColor="@color/secondary_text"
+            android:layout_marginRight="60dp"
+            android:text="@string/vibrations"/>
+
+        <Switch
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Time Sync"
+            android:textSize="18sp"
+            android:id="@+id/time"
+            android:textColor="@color/primary_light"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="25sp"
+            android:textColor="@color/secondary_text"
+            android:layout_marginRight="60dp"
+            android:text="@string/time_sync"/>
+
+
+
+</LinearLayout>
+</LinearLayout>

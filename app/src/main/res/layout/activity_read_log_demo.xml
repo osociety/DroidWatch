@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/droid_watch_app_background"
+    tools:context="com.developers.paras.droidwatch.ReadLogDemo">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:layout_width="368dp"
+            android:layout_height="495dp"
+            android:id="@+id/textView1"
+            android:textColor="@color/primary_light"
+            />
+    </ScrollView>
+</HorizontalScrollView>
