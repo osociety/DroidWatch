@@ -275,6 +275,7 @@ public class DeviceListFragment extends Fragment {
         protected Void doInBackground(Void... params) {
             try {
                 Thread.sleep(2000);
+
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.device_list_layout, new DeviceHomeFragment());
                 ft.commit();
