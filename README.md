@@ -1,6 +1,10 @@
 # DroidWatch
 SmartWatch project using arduino and android. This project is built on android studio that provide android as platform to work
-with the arduino platform. SmartWatch is project i'm influenced from the [tinkernut] (http://www.tinkernut.com/portfolio/make-smartwatch-old-cell-phone-part-1/). But i have used the oled screen as i'm not from electronics department and i was unable to solder the wires on the old cell phone oled screen.
+with the arduino platform. SmartWatch is project i'm influenced from the 
+
+* [tinkernut] (http://www.tinkernut.com/portfolio/make-smartwatch-old-cell-phone-part-1/) - But doesn't used any of the code from it. 
+
+But i have used the oled screen as i'm not from electronics department and i was unable to solder the wires on the old cell phone oled screen.
 
 # This project is licensed under MIT LICENSE.
 
