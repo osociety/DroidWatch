@@ -53,8 +53,9 @@ This project maintains some code of conduct - see the [CODE_OF_CONDUCT.md](CODE_
 
 ## Acknowledgments
 
-* [Tinkernut.com](http://www.tinkernut.com/portfolio/make-smartwatch-old-cell-phone-part-1/).
-* [Developers Guide](https://developer.android.com/guide/topics/connectivity/bluetooth.html).
+* [Tinkernut.com](http://www.tinkernut.com/portfolio/make-smartwatch-old-cell-phone-part-1/) - Inspiration.
+* [Developers Guide](https://developer.android.com/guide/topics/connectivity/bluetooth.html) - Guide for Bluetooth communication.
+* [StackOverFlow.com](https://stackoverflow.com/) - For bug fixes and code helps.
 
 
 
