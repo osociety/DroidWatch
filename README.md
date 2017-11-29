@@ -11,9 +11,9 @@ feel free to post a issue and I will try my best to solve it.
 * 1. Update your android studio to the latest version.
 * 2. Update gradle and sdk libraries.
 
-### Add to Studio
+## Add to Studio
 
-# Follow these instructions if you want to add this project into the android studio.
+### Follow these instructions if you want to add this project into the android studio.
 
 *  Download this repository from the clone/download repository.
 *  Extract the .zip and move this folder to your AndroidStudioProjects folder.
@@ -31,11 +31,11 @@ You can run this project from within the android studio or build and apk and the
 * [Arduino](https://www.arduino.cc/) - The Arduino IDE used
 * [Android](developer.android.com) - Android Development
 
-# Read the full instructions here on How to build DroidWatch
+### Read the full instructions here on How to build DroidWatch
 
 * [parasasblog](https://parasasblog.wordpress.com/2017/08/26/how-to-make-smart-watch-using-arduino-and-android-phone/) - Follow my blog too.
 
-# Watch my video for the demonstration of the making
+### Watch my video for the demonstration of the making
 
 * [Youtube](https://www.youtube.com/watch?v=1CehEKMKx24&t=10s) - Subscribe, Like and Comment on video.
 
