@@ -39,6 +39,12 @@ You can run this project from within the android studio or build and apk and the
 
 * [Youtube](https://www.youtube.com/watch?v=1CehEKMKx24&t=10s) - Subscribe, Like and Comment on video.
 
+## Screenshots
+![Alt text](https://github.com/parasthekoder/DroidWatch/droidwatchnavigationdrawer.png?raw=true "Navigation Drawer")
+![Alt text](https://github.com/parasthekoder/DroidWatch/droidwatchdevicelist.png?raw=true "Device List")
+![Alt text](https://github.com/parasthekoder/DroidWatch/droidwatchconnectedscreen.png?raw=true "Connected Screen")
+
+
 ## Authors
 
 * **Paras Khandelwal** - *Initial work* - [project-aptron](https://github.com/parasthekoder/project_aptron)
