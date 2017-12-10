@@ -46,7 +46,7 @@ You can run this project from within the android studio or build and apk and the
     <td><img src="docs/screenshots/droidwatchdevicelist.png" height = "480" width="270"></td>
     <td><img src="docs/screenshots/droidwatchconnectedscreen.png" height = "480" width="270"></td>
   </tr>
-<table>
+</table>
 
 ## Authors
 
