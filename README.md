@@ -40,10 +40,13 @@ You can run this project from within the android studio or build and apk and the
 * [Youtube](https://www.youtube.com/watch?v=1CehEKMKx24&t=10s) - Subscribe, Like and Comment on video.
 
 ## Screenshots
-![Alt text](docs/screenshots/droidwatchnavigationdrawer.png?raw=true "Navigation Drawer")
-![Alt text](docs/screenshots/droidwatchdevicelist.png?raw=true "Device List")
-![Alt text](docs/screenshots/droidwatchconnectedscreen.png?raw=true "Connected Screen")
-
+<table>
+  <tr>
+    <td><img src="docs/screenshots/droidwatchnavigationdrawer.png" height = "480" width="270"></td>
+    <td><img src="docs/screenshots/droidwatchdevicelist.png" height = "480" width="270"></td>
+    <td><img src="docs/screenshots/droidwatchconnectedscreen.png" height = "480" width="270"></td>
+  </tr>
+<table>
 
 ## Authors
 
