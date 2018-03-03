@@ -1,5 +1,6 @@
 package com.developers.paras.droidwatch;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -8,10 +9,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Gravity;
@@ -40,7 +46,7 @@ public class NavigationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final int REQUEST_ENABLE_BT =2 ;
-
+    private static final int REQUEST_PERMISSIONS = 10;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +67,24 @@ public class NavigationActivity extends AppCompatActivity
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.add(R.id.device_list_layout, new DeviceListFragment());
         ft.commit();
+
+
+        if(ActivityCompat.checkSelfPermission(this,Manifest.permission.READ_SMS)+ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_CONTACTS)+ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH)+ActivityCompat.checkSelfPermission(this,Manifest.permission.BLUETOOTH_ADMIN)+ActivityCompat.checkSelfPermission(this,Manifest.permission.RECEIVE_SMS)+ActivityCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE)+ActivityCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)+ActivityCompat.checkSelfPermission(this,Manifest.permission.READ_PHONE_STATE)+ActivityCompat.checkSelfPermission(this,Manifest.permission.READ_CONTACTS)!= PackageManager.PERMISSION_GRANTED){
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if(shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)||shouldShowRequestPermissionRationale(Manifest.permission.WRITE_CONTACTS)||shouldShowRequestPermissionRationale(Manifest.permission.BLUETOOTH)||shouldShowRequestPermissionRationale(Manifest.permission.BLUETOOTH_ADMIN)||shouldShowRequestPermissionRationale(Manifest.permission.RECEIVE_SMS)||shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)||shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)||shouldShowRequestPermissionRationale(Manifest.permission.READ_PHONE_STATE)||shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)){
+                    Toast.makeText(this, "you need to check permission", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){
+                requestPermissions(new String[]{Manifest.permission.READ_SMS,Manifest.permission.WRITE_CONTACTS,Manifest.permission.BLUETOOTH,Manifest.permission.BLUETOOTH_ADMIN,Manifest.permission.RECEIVE_SMS,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CONTACTS},REQUEST_PERMISSIONS);
+            }
+        }
+        else{
+
+        }
+
 
         // Requesting Bluetooth permission to open it
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -221,6 +245,33 @@ public class NavigationActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+
+        if(requestCode==REQUEST_PERMISSIONS){
+            if((grantResults.length>0)&&(grantResults[0]+grantResults[1]+grantResults[2]+grantResults[3]+grantResults[4]+grantResults[5]+grantResults[6]+grantResults[7]+grantResults[8])==PackageManager.PERMISSION_GRANTED){
+
+                SharedPreferences sp = getSharedPreferences("permissions",MODE_PRIVATE);
+                boolean grant = sp.getBoolean("grantResult",false);
+                if(!grant){
+                    Toast.makeText(this, "Permissions successfully granted.", Toast.LENGTH_SHORT).show();
+                    SharedPreferences.Editor et = sp.edit();
+                    et.putBoolean("grantResult",true);
+                    et.apply();
+                }
+
+            }else {
+
+                Toast.makeText(this, "permission was not granted"+grantResults[0]+grantResults[1]+grantResults[2]+grantResults[3]+grantResults[4]+grantResults[5]+grantResults[6]+grantResults[7]+grantResults[8], Toast.LENGTH_LONG).show();
+            }
+        }
+        else
+        {
+            super.onRequestPermissionsResult(requestCode,permissions,grantResults);
+        }
     }
 }
 
