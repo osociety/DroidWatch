@@ -14,5 +14,7 @@
     <string name="time_sync">This will turn off the Time Sync on the Droid Watch. See this feature is essential for watch but available here to explore</string>
 
     <string name="aboutapp">This app is created as a project of SmartWatch from which you can connect your arduino maded watch. This app will help you to send the time, call, and msg to your watch over the bluetooth. If you are facing problem in connecting to bluetooth module then first pair it in mobile settings and then use this app.\n\n This app will help you manage the vibrations, time sync, call and sms notifications in the future update, I"m working on it and complete it as soon as possible.\n\n You can also see this project github repo and edit this app for the development and learning.</string>
+    <string name="admob_id">ca-app-pub-9074226798924140/6568765017</string>
+    <string name="admob_id_test">ca-app-pub-3940256099942544/6300978111</string>
 
 </resources>

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "518848038569",
+    "firebase_url": "https://droid-watch.firebaseio.com",
+    "project_id": "droid-watch",
+    "storage_bucket": "droid-watch.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:518848038569:android:8e6a2f7fb233508a",
+        "android_client_info": {
+          "package_name": "com.developers.paras.droidwatch"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "518848038569-930uq38nlim2un91qpos4pnue35cuog4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4EhoT79s4hH_RUDS9HS_R-3dZdtn7Lu0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

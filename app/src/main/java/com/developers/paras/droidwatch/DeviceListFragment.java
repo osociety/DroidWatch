@@ -1,7 +1,8 @@
 package com.developers.paras.droidwatch;
 
-
 import android.app.AlertDialog;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -16,9 +17,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,15 +29,16 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+
 import java.util.Set;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
 public class DeviceListFragment extends Fragment {
 
 
@@ -52,6 +52,8 @@ public class DeviceListFragment extends Fragment {
     String[] arr_paired={" "," "," "," ", " "," "," "," "};
     int i=0;
     int j=0;
+    private static final String ADMOB_ID = "ca-app-pub-9074226798924140/6568765017";
+    private  static  final String ADMOB_ID_TEST = "ca-app-pub-3940256099942544/6300978111";
 
     @Override
     public void onAttach(Context context) {
@@ -74,7 +76,6 @@ public class DeviceListFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
 
 
         final BluetoothAdapter badapter = BluetoothAdapter.getDefaultAdapter();
@@ -277,7 +278,8 @@ public class DeviceListFragment extends Fragment {
                 Thread.sleep(2000);
 
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.device_list_layout, new DeviceHomeFragment());
+                Fragment f = new DeviceHomeFragment();
+                ft.replace(R.id.device_list_layout,f);
                 ft.commit();
             } catch (InterruptedException e) {
                 e.printStackTrace();

@@ -77,28 +77,31 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:orientation="vertical"
-            android:layout_weight="3"
+            android:layout_weight="2"
             >
             <Button
-                android:layout_gravity="bottom"
+                android:layout_gravity="top"
                 android:text="Reconnect"
                 android:textSize="20dp"
+                android:layout_weight="1"
                 android:textColor="@color/primary_light"
                 android:background="@drawable/button"
                 android:id="@+id/reconnect"
                 android:layout_margin="5dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="0dp" />
             <Button
                 android:layout_gravity="bottom"
                 android:text="Disconnect"
                 android:textSize="20dp"
+
                 android:textColor="@color/primary_light"
                 android:background="@drawable/button"
                 android:id="@+id/disconnect"
                 android:layout_margin="5dp"
+                android:layout_weight="1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="0dp" />
         </LinearLayout>
 
     </LinearLayout>

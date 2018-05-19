@@ -1,6 +1,8 @@
 package com.developers.paras.droidwatch;
 
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -20,8 +22,6 @@ import android.os.Looper;
 import android.provider.ContactsContract;
 import android.provider.Telephony;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.telephony.PhoneStateListener;
 import android.telephony.SmsMessage;
 import android.telephony.TelephonyManager;
@@ -32,6 +32,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -53,9 +57,14 @@ public class DeviceHomeFragment extends Fragment {
     private String INCOMING_NUMBER = null;
     private String INCOMING_MESSAGE_BODY =null;
     private String INCOMING_MESSAGE_NUMBER =null;
+    private static final String ADMOB_ID = "ca-app-pub-9074226798924140/8780544128";
 
+    private static final String ADMOB_ID_TEST = "ca-app-pub-3940256099942544/1033173712";
+
+    InterstitialAd mInterstitialAd;
     TelephonyManager tmg=null;
     CallStateListener callstate=null;
+    ConnectThread conthread = null;
 
     View v;
     Context con=null;
@@ -90,7 +99,7 @@ public class DeviceHomeFragment extends Fragment {
         final BluetoothDevice device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address);
 
         //Trying to create tunnel bluetooth device
-        final ConnectThread conthread = new ConnectThread(device);
+        conthread = new ConnectThread(device);
 
 
         TelephonyManager  tm = (TelephonyManager) con.getSystemService(Context.TELEPHONY_SERVICE);
@@ -113,8 +122,14 @@ public class DeviceHomeFragment extends Fragment {
         final TextView device_data = (TextView) v.findViewById(R.id.device_data);
         Button reconnect = (Button) v.findViewById(R.id.reconnect);
 
+        String admob_interstitial = con.getResources().getString(R.string.admob_interstitial);
+        MobileAds.initialize(con, admob_interstitial);
+        mInterstitialAd = new InterstitialAd(con);
+        mInterstitialAd.setAdUnitId(admob_interstitial);
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
-            //Trying to connect with bluetooth device
+
+        //Trying to connect with bluetooth device
             conthread.run();
 
 
@@ -122,18 +137,18 @@ public class DeviceHomeFragment extends Fragment {
             device_name.setText("Name : "+name);
 
             // Setting the Status on the TextView
-            if(conthread.getStatus()==false)
+            if(!conthread.getStatus())
             {
                 device_status.setText("Status : Not Connected");
                 Log.d("mybt","Status not connected");
 
 
-            } else if(conthread.getStatus()==true)
+            } else if(conthread.getStatus())
             {
                 device_status.setText("Status : Connected");
                 Log.d("mybt","Status connected");
 
-                BackgroundTask backgroundtask= new BackgroundTask(device_status,device_data,conthread);
+                BackgroundTask backgroundtask= new BackgroundTask(device_status,device_data);
                 backgroundtask.execute();
 
             }
@@ -164,15 +179,19 @@ public class DeviceHomeFragment extends Fragment {
                     SharedPreferences.Editor et = sp.edit();
                     et.clear();
 
+                    if (mInterstitialAd.isLoaded()) {
+                        mInterstitialAd.show();
+                    } else {
+                        Log.d("Admob interstitial", "The interstitial wasn't loaded yet.");
+                    }
+
                     //******SENDING CONTROL BACK TO DEVICE LIST*************
                     FragmentTransaction ft = getFragmentManager().beginTransaction();
-                    ft.replace(R.id.device_list_layout, new DeviceListFragment());
+                    Fragment f = new DeviceHomeFragment();
+                    ft.replace(R.id.device_list_layout, f);
                     ft.commit();
                 }
             });
-
-
-
 
     }
 
@@ -180,12 +199,9 @@ public class DeviceHomeFragment extends Fragment {
 
         TextView device_status = null;
         TextView device_data=null;
-        ConnectThread conthread=null;
-
-        public BackgroundTask(TextView status, TextView data, ConnectThread connect) {
+        BackgroundTask(TextView status, TextView data) {
               device_status= status;
               device_data = data;
-            conthread = connect;
         }
 
         @Override
