@@ -6,6 +6,10 @@ with the arduino platform. SmartWatch is a project i'm influenced from the tinke
 You will need the android studio to get started with this project. If you find any difficulty in adding and using this project,
 feel free to post a issue and I will try my best to solve it.
 
+### Download it from play store 
+Here is the up to date DroidWatch app published on google.
+* [Download DroidWatch from play store](https://play.google.com/store/apps/details?id=com.developers.paras.droidwatch) 
+* [Download DroidWatch from amazon app store](https://www.amazon.com/DroidTeam-Droid-Watch/dp/B074SK8VDL/ref=sr_1_1?s=mobile-apps&ie=UTF8&qid=1522824933&sr=1-1&keywords=droid+watch)
 ### Prerequisites
 
 * 1. Update your android studio to the latest version.
