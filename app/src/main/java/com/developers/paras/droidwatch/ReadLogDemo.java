@@ -21,12 +21,12 @@ public class ReadLogDemo extends AppCompatActivity {
                     new InputStreamReader(process.getInputStream()));
 
             StringBuilder log=new StringBuilder();
-            String line = "";
+            String line;
             while ((line = bufferedReader.readLine()) != null) {
                 line = line + "\n";
                 log.append(line);
             }
-            TextView tv = (TextView)findViewById(R.id.textView1);
+            TextView tv = findViewById(R.id.textView1);
             tv.setText(log.toString());
         } catch (IOException e) {
             // Handle Exception

@@ -61,7 +61,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="5dp"
                 android:id="@+id/device_list_paired"
-                ></ListView>
+                />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_weight="0.5"
@@ -72,8 +72,20 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="5dp"
                 android:layout_height="0dp"
-                android:text="Available devices" />
+                android:text="Available devices"
+                />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_weight="0.5"
+                android:textSize="12sp"
+                android:textAlignment="center"
+                android:textColor="@color/primary_light"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_height="0dp"
+                android:text="If do not find your device. Please pair device in Android Settings."
+                />
             <ListView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -81,7 +93,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="5dp"
                 android:id="@+id/device_list"
-                ></ListView>
+                />
 
         </LinearLayout>
 

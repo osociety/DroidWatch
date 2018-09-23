@@ -15,14 +15,14 @@ import java.io.OutputStream;
  */
 
 
-public class MyBluetoothService {
+class MyBluetoothService {
 
     // Defines several constants used when transmitting messages between the
     // service and the UI.
     private interface MessageConstants {
-        public static final int MESSAGE_READ = 0;
-        public static final int MESSAGE_WRITE = 1;
-        public static final int MESSAGE_TOAST = 2;
+        int MESSAGE_READ = 0;
+        int MESSAGE_WRITE = 1;
+        int MESSAGE_TOAST = 2;
 
         // ... (Add other message types here as needed.)
     }
@@ -38,9 +38,8 @@ public class MyBluetoothService {
             return mmSocket;
         }
 
-        public ConnectedThread(BluetoothSocket socket) {
+        ConnectedThread(BluetoothSocket socket) {
             mmSocket = socket;
-            InputStream tmpIn = null;
             OutputStream tmpOut = null;
 
             // Get the input and output streams; using temp objects because
@@ -56,7 +55,7 @@ public class MyBluetoothService {
                 Log.d("mybt", "Error occurred when creating output stream", e);
             }
 
-            mmInStream = tmpIn;
+            mmInStream = null;
             mmOutStream = tmpOut;
         }
 
@@ -107,7 +106,7 @@ public class MyBluetoothService {
         }
 
         // Call this method from the main activity to shut down the connection.
-        public void cancel() {
+        void cancel() {
             try {
                 mmSocket.close();
             } catch (IOException e) {

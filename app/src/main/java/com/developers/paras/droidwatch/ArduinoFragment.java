@@ -2,6 +2,7 @@ package com.developers.paras.droidwatch;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -24,7 +25,7 @@ public class ArduinoFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         v=inflater.inflate(R.layout.fragment_arduino, container, false);
         // Inflate the layout for this fragment
@@ -35,9 +36,8 @@ public class ArduinoFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        WebView webView = (WebView) v.findViewById(R.id.web);
+        WebView webView = v.findViewById(R.id.web);
         WebSettings w = webView.getSettings();
-        w.setJavaScriptEnabled(true);
         w.setBuiltInZoomControls(true);
         webView.loadUrl("https://www.arduino.cc/en/Guide/Introduction");
     }

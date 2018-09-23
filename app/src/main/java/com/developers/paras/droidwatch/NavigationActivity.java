@@ -2,29 +2,19 @@ package com.developers.paras.droidwatch;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -33,15 +23,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
@@ -52,8 +39,6 @@ import java.io.InputStreamReader;
 
 import io.fabric.sdk.android.Fabric;
 
-import static android.app.Activity.RESULT_OK;
-
 public class NavigationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -62,6 +47,9 @@ public class NavigationActivity extends AppCompatActivity
     private static final String appURL = "https://play.google.com/store/apps/details?id=com.developers.paras.droidwatch";
     InterstitialAd mInterstitialAd;
     private AdView mAdview;
+    private AdView eAdview;
+    AlertDialog.Builder alertDialogBuilder;
+    AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,29 +57,31 @@ public class NavigationActivity extends AppCompatActivity
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_navigation);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer =  findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        String admob_app_id = getResources().getString(R.string.app_id);
         // activate the interstitial ad
         String admob_interstitial = getResources().getString(R.string.admob_interstitial);
-        MobileAds.initialize(this, admob_interstitial);
+        MobileAds.initialize(this, admob_app_id);
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId(admob_interstitial);
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
         // activate the banner ad
-        String admobBanner = getResources().getString(R.string.admob_banner);
-        MobileAds.initialize(this, admobBanner);
         mAdview = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
+        AdRequest adRequest = new AdRequest.Builder()
+                //.addTestDevice("AEFC456A34FE13104011258A25947901")
+                .build();
         mAdview.loadAd(adRequest);
         mAdview.setAdListener(new AdListener() {
             @Override
@@ -101,39 +91,37 @@ public class NavigationActivity extends AppCompatActivity
             }
         });
 
+
+        String admob_exit_id = getResources().getString(R.string.admob_exit);
+        eAdview = new AdView(this);
+        eAdview.setAdSize(AdSize.MEDIUM_RECTANGLE);
+        eAdview.setAdUnitId(admob_exit_id);
+
+        AdRequest adRequestexit = new AdRequest.Builder()
+                //.addTestDevice("AEFC456A34FE13104011258A25947901")
+                .build();
+        eAdview.loadAd(adRequestexit);
+        eAdview.setAdListener(new AdListener() {
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+                Toast.makeText(getApplicationContext(), "You clicked on ad", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
         android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
         DeviceListFragment f = new DeviceListFragment();
         ft.add(R.id.device_list_layout, f);
         ft.commit();
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) + ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_CONTACTS) + ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH) + ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADMIN) + ActivityCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) + ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) + ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) + ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) + ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS) || shouldShowRequestPermissionRationale(Manifest.permission.WRITE_CONTACTS) || shouldShowRequestPermissionRationale(Manifest.permission.BLUETOOTH) || shouldShowRequestPermissionRationale(Manifest.permission.BLUETOOTH_ADMIN) || shouldShowRequestPermissionRationale(Manifest.permission.RECEIVE_SMS) || shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE) || shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE) || shouldShowRequestPermissionRationale(Manifest.permission.READ_PHONE_STATE) || shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)) {
-                    Toast.makeText(this, "you need to check permission", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(new String[]{Manifest.permission.READ_SMS, Manifest.permission.WRITE_CONTACTS, Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CONTACTS}, REQUEST_PERMISSIONS);
-            }
-        } else {
-
-        }
-
-
-        // Requesting Bluetooth permission to open it
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (!mBluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        }
 
 
         // ATTENTION: This was auto-generated to handle app links.
-        Intent appLinkIntent = getIntent();
-        String appLinkAction = appLinkIntent.getAction();
-        Uri appLinkData = appLinkIntent.getData();
+//        Intent appLinkIntent = getIntent();
+//        String appLinkAction = appLinkIntent.getAction();
+//        Uri appLinkData = appLinkIntent.getData();
+
     }
 
     @Override
@@ -184,26 +172,53 @@ public class NavigationActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) + ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_CONTACTS) + ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH) + ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADMIN) + ActivityCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) + ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) + ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) + ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) + ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS) || shouldShowRequestPermissionRationale(Manifest.permission.WRITE_CONTACTS) || shouldShowRequestPermissionRationale(Manifest.permission.BLUETOOTH) || shouldShowRequestPermissionRationale(Manifest.permission.BLUETOOTH_ADMIN) || shouldShowRequestPermissionRationale(Manifest.permission.RECEIVE_SMS) || shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE) || shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE) || shouldShowRequestPermissionRationale(Manifest.permission.READ_PHONE_STATE) || shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)) {
+                    Toast.makeText(this, "you need to check permission", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{Manifest.permission.READ_SMS, Manifest.permission.WRITE_CONTACTS, Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CONTACTS}, REQUEST_PERMISSIONS);
+            }
+        }
 
 
+        // Requesting Bluetooth permission to open it
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (!mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
+
+        alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setView(eAdview).setCancelable(false)
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        })
+                .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        dialog = alertDialogBuilder.create();
 
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            dialog.show();
         }
-
-        if (mInterstitialAd.isLoaded()) {
-            mInterstitialAd.show();
-        } else {
-            Log.d("Admob interstitial", "The interstitial wasn't loaded yet.");
-        }
-
     }
 
     @Override
@@ -231,9 +246,8 @@ public class NavigationActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -249,13 +263,13 @@ public class NavigationActivity extends AppCompatActivity
                 BufferedReader bufferedReader = new BufferedReader(
                         new InputStreamReader(process.getInputStream()));
 
-                String line = "";
+                String line ;
                 while ((line = bufferedReader.readLine()) != null) {
                     line = line + "\n";
                     log.append(line);
                 }
             } catch (IOException e) {
-                // Handle Exception
+                Log.d("navItem",e.getMessage());
             }
 
             Intent email = new Intent(Intent.ACTION_SEND);
@@ -310,7 +324,7 @@ public class NavigationActivity extends AppCompatActivity
             startActivity(intent);
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

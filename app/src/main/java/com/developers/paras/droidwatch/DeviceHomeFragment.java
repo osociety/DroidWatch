@@ -10,6 +10,7 @@ import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -22,6 +23,7 @@ import android.os.Looper;
 import android.provider.ContactsContract;
 import android.provider.Telephony;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.telephony.PhoneStateListener;
 import android.telephony.SmsMessage;
 import android.telephony.TelephonyManager;
@@ -106,7 +108,12 @@ public class DeviceHomeFragment extends Fragment {
            tmg=tm;
         CallStateListener callStateListener = new CallStateListener();
         callstate=callStateListener;
-        tm.listen(callStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+        if (tm != null) {
+            tm.listen(callStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+        }
+        else{
+            Toast.makeText(con, "Unable to connect to telephone manager", Toast.LENGTH_SHORT).show();
+        }
 
         IntentFilter filter = new IntentFilter();
 
@@ -158,7 +165,7 @@ public class DeviceHomeFragment extends Fragment {
             reconnect.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    Toast.makeText(con, "Reconnecting. Please wait a moment.", Toast.LENGTH_SHORT).show();
                     //******SENDING CONTROL BACK TO DEVICE LIST*************
                     FragmentTransaction ft = getFragmentManager().beginTransaction();
                     ft.replace(R.id.device_list_layout, new DeviceHomeFragment());
@@ -175,21 +182,64 @@ public class DeviceHomeFragment extends Fragment {
                     conthread.setStatus(false);
                     device_status.setText("Status : Not Connected");
 
-                    SharedPreferences sp = con.getSharedPreferences("device_info",MODE_PRIVATE);
-                    SharedPreferences.Editor et = sp.edit();
-                    et.clear();
+                    final FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    Fragment f = new DeviceListFragment();
+                    ft.replace(R.id.device_list_layout, f);
+
+                    SharedPreferences sp1 = con.getSharedPreferences("device_info",MODE_PRIVATE);
+                    final SharedPreferences.Editor et1 = sp1.edit();
+                    et1.clear();
+                    et1.apply();
+
+                    SharedPreferences sp = con.getSharedPreferences("review",MODE_PRIVATE);
+                    final SharedPreferences.Editor et = sp.edit();
+                    int i =  sp.getInt("review_count",-5);
+                    if(i==-5){
+                        et.putInt("review_count",1);
+                        et.apply();
+                    }
+                    if(i%4==0){
+
+                        new AlertDialog.Builder(con)
+                                .setTitle("Review if it worked")
+                                .setMessage("It will be very helpful in providing support to me improving this app")
+                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        et.putInt("review_count",1);
+                                        et.apply();
+                                        //******SENDING CONTROL BACK TO DEVICE LIST*************
+                                        ft.commit();
+                                    }
+                                })
+                                .setPositiveButton("Review", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        et.putInt("review_count",-3);
+                                        et.apply();
+                                        final String appPackageName = con.getPackageName(); // getPackageName() from Context or Activity object
+                                        try {
+                                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                                        } catch (android.content.ActivityNotFoundException anfe) {
+                                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                                        }
+                                    }
+                                }).show();
+                    }
+                    else{
+                        et.putInt("review_count",++i);
+                        et.apply();
+                        //******SENDING CONTROL BACK TO DEVICE LIST*************
+                        ft.commit();
+                    }
 
                     if (mInterstitialAd.isLoaded()) {
                         mInterstitialAd.show();
                     } else {
                         Log.d("Admob interstitial", "The interstitial wasn't loaded yet.");
                     }
+                    et.apply();
 
-                    //******SENDING CONTROL BACK TO DEVICE LIST*************
-                    FragmentTransaction ft = getFragmentManager().beginTransaction();
-                    Fragment f = new DeviceHomeFragment();
-                    ft.replace(R.id.device_list_layout, f);
-                    ft.commit();
                 }
             });
 
@@ -305,7 +355,7 @@ public class DeviceHomeFragment extends Fragment {
             contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
         }
 
-        if(cursor != null && !cursor.isClosed()) {
+        if(!cursor.isClosed()) {
             cursor.close();
         }
 
@@ -339,8 +389,7 @@ public class DeviceHomeFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             if (Telephony.Sms.Intents.SMS_RECEIVED_ACTION.equals(intent.getAction())) {
                 for (SmsMessage smsMessage : Telephony.Sms.Intents.getMessagesFromIntent(intent)) {
-                    String messageBody = smsMessage.getMessageBody();
-                    INCOMING_MESSAGE_BODY=messageBody;
+                    INCOMING_MESSAGE_BODY= smsMessage.getMessageBody();
                     INCOMING_MESSAGE_NUMBER = smsMessage.getOriginatingAddress();
                     MESSAGE_STATE=1;
                     Toast.makeText(context,"Message state "+MESSAGE_STATE, Toast.LENGTH_LONG).show();
@@ -362,14 +411,13 @@ public class DeviceHomeFragment extends Fragment {
 class ConnectThread extends Thread {
     private final BluetoothSocket mmSocket;
     private BluetoothSocket mmSocketFallback;
-    private final BluetoothDevice mmDevice;
     private static boolean SUCCESS = false;
 
     public boolean getStatus() {
         return SUCCESS;
     }
     public void setStatus(boolean value) {
-        this.SUCCESS=value;
+        SUCCESS=value;
     }
 
     public BluetoothSocket getSocket() {
@@ -377,17 +425,16 @@ class ConnectThread extends Thread {
     }
 
 
-    public ConnectThread(BluetoothDevice device) {
+    ConnectThread(BluetoothDevice device) {
         // Use a temporary object that is later assigned to mmSocket
         // because mmSocket is final.
         BluetoothSocket tmp = null;
-        mmDevice = device;
 
         try {
             // Get a BluetoothSocket to connect with the given BluetoothDevice.
             // MY_UUID is the app's UUID string, also used in the server code.
             // careful for attacks before connection is insecure
-            tmp = mmDevice.createRfcommSocketToServiceRecord(UUID.randomUUID());
+            tmp = device.createRfcommSocketToServiceRecord(UUID.randomUUID());
 
 
         } catch (IOException e) {
@@ -408,7 +455,7 @@ class ConnectThread extends Thread {
             Class<?> clazz = tmp.getRemoteDevice().getClass();
             Class<?>[] paramTypes = new Class<?>[] {Integer.TYPE};
             Method m = clazz.getMethod("createRfcommSocket", paramTypes);
-            Object[] params = new Object[] {Integer.valueOf(1)};
+            Object[] params = new Object[] {1};
 
             mmSocketFallback = (BluetoothSocket) m.invoke(tmp.getRemoteDevice(), params);
         }
@@ -429,7 +476,6 @@ class ConnectThread extends Thread {
             } catch (IOException closeException) {
                 Log.d("mybt", "Could not close the client socket due to : "+closeException, closeException);
             }
-            return;
         }
 
         // The connection attempt succeeded. Perform work associated with

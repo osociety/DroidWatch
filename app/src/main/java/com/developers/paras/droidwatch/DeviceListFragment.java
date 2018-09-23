@@ -1,6 +1,6 @@
 package com.developers.paras.droidwatch;
 
-import android.app.AlertDialog;
+
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
@@ -8,7 +8,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -17,33 +16,18 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Spinner;
-import android.widget.Toast;
-
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
-
 import java.util.Set;
 
-import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 
 public class DeviceListFragment extends Fragment {
 
-
-    private final static int BOND_NONE = 10;
-    private final static int BOND_BONDED = 12;
     View v;
     Context con;
     String[] data[]= {{" "," "},{" "," "},{" ", " "},{" "," "}, {" "," "},{" "," "},{" "," "},{" "," "}};
@@ -52,8 +36,6 @@ public class DeviceListFragment extends Fragment {
     String[] arr_paired={" "," "," "," ", " "," "," "," "};
     int i=0;
     int j=0;
-    private static final String ADMOB_ID = "ca-app-pub-9074226798924140/6568765017";
-    private  static  final String ADMOB_ID_TEST = "ca-app-pub-3940256099942544/6300978111";
 
     @Override
     public void onAttach(Context context) {
@@ -80,7 +62,7 @@ public class DeviceListFragment extends Fragment {
 
         final BluetoothAdapter badapter = BluetoothAdapter.getDefaultAdapter();
 
-        FloatingActionButton fab = (FloatingActionButton) v.findViewById(R.id.fab);
+        FloatingActionButton fab =  v.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -154,21 +136,21 @@ public class DeviceListFragment extends Fragment {
     public void showListPaired()
     {
 
-        ListView lv = (ListView) v.findViewById(R.id.device_list_paired);
+        ListView lv = v.findViewById(R.id.device_list_paired);
 
-        ArrayAdapter<String> ad = new ArrayAdapter<String>(con,R.layout.simple_list_item,arr_paired);
+        ArrayAdapter<String> ad = new ArrayAdapter<>(con,R.layout.simple_list_item,arr_paired);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i1, long l) {
 
-                if(arr_paired[i1]!=" ")
+                if(!arr_paired[i1].equals(" "))
                 {
                     SharedPreferences sp = con.getSharedPreferences("device_info",MODE_PRIVATE);
                     SharedPreferences.Editor et = sp.edit();
                     et.putString("device_name",data_paired[i1][0]);
                     et.putString("hardware_address",data_paired[i1][1]);
-                    et.commit();
+                    et.apply();
 
                     BackgroundTask task = new BackgroundTask((NavigationActivity) getActivity());
                     task.execute();
@@ -183,22 +165,22 @@ public class DeviceListFragment extends Fragment {
     public void showList()
     {
 
-        ListView lv = (ListView) v.findViewById(R.id.device_list);
+        ListView lv =  v.findViewById(R.id.device_list);
 
-        ArrayAdapter<String> ad = new ArrayAdapter<String>(con,R.layout.simple_list_item,arr);
+        ArrayAdapter<String> ad = new ArrayAdapter<>(con,R.layout.simple_list_item,arr);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i1, long l) {
 
-                if(arr[i1]!=" ")
+                if(!arr[i1].equals(" "))
                 {
 
                     SharedPreferences sp = con.getSharedPreferences("device_info",MODE_PRIVATE);
                     SharedPreferences.Editor et = sp.edit();
                     et.putString("device_name",data[i1][0]);
                     et.putString("hardware_address",data[i1][1]);
-                    et.commit();
+                    et.apply();
 
 
                     BackgroundTask task = new BackgroundTask((NavigationActivity) getActivity());
@@ -215,13 +197,7 @@ public class DeviceListFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
 
-            if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
-                //discovery starts, we can show progress dialog or perform other tasks
-
-            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-                //discovery finishes, dismis progress dialog
-
-            } else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
 
                 // Discovery has found a device. Get the BluetoothDevice
                 // object and its info from the Intent.
@@ -233,7 +209,6 @@ public class DeviceListFragment extends Fragment {
                 {
                     j=0;
                 }
-
                     data[j][0]=deviceName;
                     data[j][1]=deviceHardwareAddress;
 
@@ -255,13 +230,13 @@ public class DeviceListFragment extends Fragment {
     private class BackgroundTask extends AsyncTask<Void, Void, Void> {
         private ProgressDialog dialog;
 
-        public BackgroundTask(NavigationActivity activity) {
+        BackgroundTask(NavigationActivity activity) {
             dialog = new ProgressDialog(activity);
         }
 
         @Override
         protected void onPreExecute() {
-            dialog.setMessage("Connecting...., please wait.");
+            dialog.setMessage("Connecting, please wait...");
             dialog.show();
         }
 

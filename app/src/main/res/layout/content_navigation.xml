@@ -13,7 +13,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="vertical"
-        android:layout_weight="9"
+        android:layout_weight="14"
         android:id="@+id/device_list_layout"
         android:layout_height="0dp">
     </LinearLayout>
@@ -21,9 +21,10 @@
         xmlns:ads="http://schemas.android.com/apk/res-auto"
         android:id="@+id/adView"
         android:background="@android:color/transparent"
-        android:layout_weight="0.8"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_weight="2"
+        android:layout_gravity="bottom"
         ads:adSize="SMART_BANNER"
         ads:adUnitId="@string/admob_banner">
     </com.google.android.gms.ads.AdView>
