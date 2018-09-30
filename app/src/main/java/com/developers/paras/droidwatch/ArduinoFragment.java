@@ -38,6 +38,7 @@ public class ArduinoFragment extends Fragment {
 
         WebView webView = v.findViewById(R.id.web);
         WebSettings w = webView.getSettings();
+        w.setJavaScriptEnabled(true);
         w.setBuiltInZoomControls(true);
         webView.loadUrl("https://www.arduino.cc/en/Guide/Introduction");
     }

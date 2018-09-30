@@ -1,6 +1,7 @@
 package com.developers.paras.droidwatch;
 
 
+import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
@@ -23,6 +24,7 @@ import android.os.Looper;
 import android.provider.ContactsContract;
 import android.provider.Telephony;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.telephony.PhoneStateListener;
 import android.telephony.SmsMessage;
@@ -38,6 +40,8 @@ import android.widget.Toast;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -63,7 +67,6 @@ public class DeviceHomeFragment extends Fragment {
 
     private static final String ADMOB_ID_TEST = "ca-app-pub-3940256099942544/1033173712";
 
-    InterstitialAd mInterstitialAd;
     TelephonyManager tmg=null;
     CallStateListener callstate=null;
     ConnectThread conthread = null;
@@ -123,17 +126,11 @@ public class DeviceHomeFragment extends Fragment {
 
 
 
-        final Button disconnect = (Button) v.findViewById(R.id.disconnect);
-        final TextView device_name = (TextView) v.findViewById(R.id.device_name);
-        final TextView device_status = (TextView) v.findViewById(R.id.device_status);
-        final TextView device_data = (TextView) v.findViewById(R.id.device_data);
-        Button reconnect = (Button) v.findViewById(R.id.reconnect);
-
-        String admob_interstitial = con.getResources().getString(R.string.admob_interstitial);
-        MobileAds.initialize(con, admob_interstitial);
-        mInterstitialAd = new InterstitialAd(con);
-        mInterstitialAd.setAdUnitId(admob_interstitial);
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        final Button disconnect =  v.findViewById(R.id.disconnect);
+        final TextView device_name =  v.findViewById(R.id.device_name);
+        final TextView device_status =  v.findViewById(R.id.device_status);
+        final TextView device_data =  v.findViewById(R.id.device_data);
+        Button reconnect =  v.findViewById(R.id.reconnect);
 
 
         //Trying to connect with bluetooth device
@@ -155,9 +152,7 @@ public class DeviceHomeFragment extends Fragment {
                 device_status.setText("Status : Connected");
                 Log.d("mybt","Status connected");
 
-                BackgroundTask backgroundtask= new BackgroundTask(device_status,device_data);
-                backgroundtask.execute();
-
+                sendSignals(device_status,device_data);
             }
 
 
@@ -182,164 +177,77 @@ public class DeviceHomeFragment extends Fragment {
                     conthread.setStatus(false);
                     device_status.setText("Status : Not Connected");
 
-                    final FragmentTransaction ft = getFragmentManager().beginTransaction();
-                    Fragment f = new DeviceListFragment();
-                    ft.replace(R.id.device_list_layout, f);
-
-                    SharedPreferences sp1 = con.getSharedPreferences("device_info",MODE_PRIVATE);
-                    final SharedPreferences.Editor et1 = sp1.edit();
-                    et1.clear();
-                    et1.apply();
-
-                    SharedPreferences sp = con.getSharedPreferences("review",MODE_PRIVATE);
+                    SharedPreferences sp = con.getSharedPreferences("device_info",MODE_PRIVATE);
                     final SharedPreferences.Editor et = sp.edit();
-                    int i =  sp.getInt("review_count",-5);
-                    if(i==-5){
-                        et.putInt("review_count",1);
-                        et.apply();
-                    }
-                    if(i%4==0){
-
-                        new AlertDialog.Builder(con)
-                                .setTitle("Review if it worked")
-                                .setMessage("It will be very helpful in providing support to me improving this app")
-                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        et.putInt("review_count",1);
-                                        et.apply();
-                                        //******SENDING CONTROL BACK TO DEVICE LIST*************
-                                        ft.commit();
-                                    }
-                                })
-                                .setPositiveButton("Review", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        et.putInt("review_count",-3);
-                                        et.apply();
-                                        final String appPackageName = con.getPackageName(); // getPackageName() from Context or Activity object
-                                        try {
-                                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-                                        } catch (android.content.ActivityNotFoundException anfe) {
-                                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
-                                        }
-                                    }
-                                }).show();
-                    }
-                    else{
-                        et.putInt("review_count",++i);
-                        et.apply();
-                        //******SENDING CONTROL BACK TO DEVICE LIST*************
-                        ft.commit();
-                    }
-
-                    if (mInterstitialAd.isLoaded()) {
-                        mInterstitialAd.show();
-                    } else {
-                        Log.d("Admob interstitial", "The interstitial wasn't loaded yet.");
-                    }
+                    et.clear();
                     et.apply();
+
+                    android.app.FragmentManager fragmentManager = getFragmentManager();
+                    final FragmentTransaction ft = fragmentManager.beginTransaction();
+                    FeedbackDialogFragment f = new FeedbackDialogFragment();
+                    ft.replace(R.id.device_list_layout, f);
+                    ft.commit();
 
                 }
             });
 
     }
+    public void sendSignals(TextView device_status, TextView device_data){
+        device_status.setText("Status : Connected");
+        device_data.setText("Data : Sending");
 
-    class BackgroundTask extends AsyncTask<Void, Void, Void> {
+        MyBluetoothService.ConnectedThread connectedThread =
+                new MyBluetoothService.ConnectedThread(conthread.getSocket());
 
-        TextView device_status = null;
-        TextView device_data=null;
-        BackgroundTask(TextView status, TextView data) {
-              device_status= status;
-              device_data = data;
-        }
-
-        @Override
-        protected void onPreExecute() {
-
-            device_status.setText("Status : Connected");
-            device_data.setText("Data : Sending");
-
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-
-            device_status.setText("Status : Not Connected");
-            device_data.setText("Data : Not Sending");
-
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-
-            try {
-                Thread.sleep(2000);
-                Looper.prepare();
-                MyBluetoothService.ConnectedThread connectedThread =
-                        new MyBluetoothService.ConnectedThread(conthread.getSocket());
-
-                while (true) {
-                    try {
-                        Thread.sleep(1000);
-
-                        if(CALL_STATE_RING==1)
-                        {
-                            Log.d("mybt","Phone is ringing");
-                        }
-
-                        byte[] byte_data ;
-                        //Retrieving current time
-                        java.util.Calendar c = java.util.Calendar.getInstance();
-                        int hh = c.get(java.util.Calendar.HOUR);
-                        int mm = c.get(java.util.Calendar.MINUTE);
-                        int ss = c.get(java.util.Calendar.SECOND);
-                        int pm= c.get(java.util.Calendar.AM_PM);
-                        if(hh==0&&pm==1)
-                        {
-                            hh=12;
-                        }
-                        Log.d("mybt","PM = "+pm);
-                        //Retrieving call information
-                        String incomingName=getContactName(con,INCOMING_NUMBER);
-                        //sending data to the watch
-                        String dataUrl = hh+":"+mm+":"+ss+":"+pm+"\0"+CALL_STATE_RING+"\0"+incomingName+"\0"+INCOMING_NUMBER+"\0"+MESSAGE_STATE+"\0"+INCOMING_MESSAGE_NUMBER+"\0"+INCOMING_MESSAGE_BODY+"\0";
-                        Log.d("mybt","Call state : "+CALL_STATE_RING+" Name : "+incomingName+" Num : "+INCOMING_NUMBER);
-                        Log.d("mybt","Message received :"+MESSAGE_STATE+" "+INCOMING_MESSAGE_NUMBER+" "+INCOMING_MESSAGE_BODY);
-                        byte_data = dataUrl.getBytes();
-                        connectedThread.write(byte_data);
-                        if(MESSAGE_STATE==1)
-                        {
-                            MESSAGE_STATE=0;
-                            INCOMING_MESSAGE_NUMBER=null;
-                            INCOMING_MESSAGE_BODY=null;
-                        }
-
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    if(!connectedThread.getWriteSocket().isConnected())
-                    {
-                        Log.d("mybt","Disconnected during transmission");
-                        break;
-                    }
-
-                }
-                CALL_STATE_RING = 0;
-                MESSAGE_STATE=0;
-                INCOMING_NUMBER = null;
-                INCOMING_MESSAGE_BODY =null;
-                INCOMING_MESSAGE_NUMBER =null;
-
-
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        while (true) {
+            if(CALL_STATE_RING==1)
+            {
+                Log.d("mybt","Phone is ringing");
             }
 
-            return null;
-        }
+            byte[] byte_data ;
+            //Retrieving current time
+            java.util.Calendar c = java.util.Calendar.getInstance();
+            int hh = c.get(java.util.Calendar.HOUR);
+            int mm = c.get(java.util.Calendar.MINUTE);
+            int ss = c.get(java.util.Calendar.SECOND);
+            int pm= c.get(java.util.Calendar.AM_PM);
+            if(hh==0&&pm==1)
+            {
+                hh=12;
+            }
+            Log.d("mybt","PM = "+pm);
+            //Retrieving call information
+            String incomingName=getContactName(con,INCOMING_NUMBER);
+            //sending data to the watch
+            String dataUrl = hh+":"+mm+":"+ss+":"+pm+"\0"+CALL_STATE_RING+"\0"+incomingName+"\0"+INCOMING_NUMBER+"\0"+MESSAGE_STATE+"\0"+INCOMING_MESSAGE_NUMBER+"\0"+INCOMING_MESSAGE_BODY+"\0";
+            Log.d("mybt","Call state : "+CALL_STATE_RING+" Name : "+incomingName+" Num : "+INCOMING_NUMBER);
+            Log.d("mybt","Message received :"+MESSAGE_STATE+" "+INCOMING_MESSAGE_NUMBER+" "+INCOMING_MESSAGE_BODY);
+            byte_data = dataUrl.getBytes();
+            connectedThread.write(byte_data);
+            if(MESSAGE_STATE==1)
+            {
+                MESSAGE_STATE=0;
+                INCOMING_MESSAGE_NUMBER=null;
+                INCOMING_MESSAGE_BODY=null;
+            }
 
+
+            if(!connectedThread.getWriteSocket().isConnected())
+            {
+                Log.d("mybt","Disconnected during transmission");
+                break;
+            }
+
+        }
+        CALL_STATE_RING = 0;
+        MESSAGE_STATE=0;
+        INCOMING_NUMBER = null;
+        INCOMING_MESSAGE_BODY =null;
+        INCOMING_MESSAGE_NUMBER =null;
+
+        device_status.setText("Status : Not Connected");
+        device_data.setText("Data : Not Sending");
     }
 
 
@@ -420,7 +328,7 @@ class ConnectThread extends Thread {
         SUCCESS=value;
     }
 
-    public BluetoothSocket getSocket() {
+    BluetoothSocket getSocket() {
         return mmSocketFallback;
     }
 
@@ -486,7 +394,7 @@ class ConnectThread extends Thread {
     }
 
     // Closes the client socket and causes the thread to finish.
-    public void cancel() {
+    void cancel() {
         try {
             mmSocketFallback.close();
             SUCCESS=false;

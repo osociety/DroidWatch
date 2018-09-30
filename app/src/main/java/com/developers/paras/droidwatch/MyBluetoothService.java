@@ -34,7 +34,7 @@ class MyBluetoothService {
         private byte[] mmBuffer; // mmBuffer store for the stream
         private Handler mHandler= new Handler();
 
-        public  BluetoothSocket getWriteSocket(){
+        BluetoothSocket getWriteSocket(){
             return mmSocket;
         }
 
@@ -81,7 +81,7 @@ class MyBluetoothService {
         }
 
         // Call this from the main activity to send data to the remote device.
-        public void write(byte[] bytes) {
+        void write(byte[] bytes) {
             try {
                    mmOutStream.write(bytes);
 

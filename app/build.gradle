@@ -10,13 +10,13 @@ android {
         }
     }
     compileSdkVersion 28
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '28.0.2'
     defaultConfig {
         applicationId "com.developers.paras.droidwatch"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 14
-        versionName "14.0"
+        versionCode 17
+        versionName "17.0"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -25,6 +25,7 @@ android {
             resValue 'string', 'admob_banner', '"ca-app-pub-3940256099942544/6300978111"'
             resValue 'string', 'admob_interstitial', '"ca-app-pub-3940256099942544/1033173712"'
             resValue 'string', 'admob_exit', '"ca-app-pub-3940256099942544/6300978111"'
+            resValue 'string', 'admob_feedback', '"ca-app-pub-3940256099942544/6300978111"'
             resValue 'string', 'app_id', '"ca-app-pub-9074226798924140~6772370028"'
         }
         release {
@@ -35,6 +36,7 @@ android {
             resValue 'string', 'admob_banner', '"ca-app-pub-9074226798924140/6568765017"'
             resValue 'string', 'admob_interstitial', '"ca-app-pub-9074226798924140/8780544128"'
             resValue 'string', 'admob_exit', '"ca-app-pub-9074226798924140/6488766121"'
+            resValue 'string', 'admob_feedback', '"ca-app-pub-9074226798924140~6772370028"'
             resValue 'string', 'app_id', '"ca-app-pub-9074226798924140~6772370028"'
             signingConfig signingConfigs.config
         }

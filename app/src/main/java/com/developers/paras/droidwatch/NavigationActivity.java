@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.support.design.widget.NavigationView;
@@ -36,6 +37,7 @@ import com.google.android.gms.ads.MobileAds;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -70,12 +72,6 @@ public class NavigationActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         String admob_app_id = getResources().getString(R.string.app_id);
-        // activate the interstitial ad
-        String admob_interstitial = getResources().getString(R.string.admob_interstitial);
-        MobileAds.initialize(this, admob_app_id);
-        mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId(admob_interstitial);
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
         // activate the banner ad
         mAdview = findViewById(R.id.adView);
@@ -83,14 +79,6 @@ public class NavigationActivity extends AppCompatActivity
                 //.addTestDevice("AEFC456A34FE13104011258A25947901")
                 .build();
         mAdview.loadAd(adRequest);
-        mAdview.setAdListener(new AdListener() {
-            @Override
-            public void onAdClicked() {
-                super.onAdClicked();
-                Toast.makeText(getApplicationContext(), "You clicked on ad", Toast.LENGTH_SHORT).show();
-            }
-        });
-
 
         String admob_exit_id = getResources().getString(R.string.admob_exit);
         eAdview = new AdView(this);
@@ -101,13 +89,6 @@ public class NavigationActivity extends AppCompatActivity
                 //.addTestDevice("AEFC456A34FE13104011258A25947901")
                 .build();
         eAdview.loadAd(adRequestexit);
-        eAdview.setAdListener(new AdListener() {
-            @Override
-            public void onAdClicked() {
-                super.onAdClicked();
-                Toast.makeText(getApplicationContext(), "You clicked on ad", Toast.LENGTH_SHORT).show();
-            }
-        });
 
 
         android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -172,16 +153,48 @@ public class NavigationActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) + ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_CONTACTS) + ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH) + ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADMIN) + ActivityCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) + ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) + ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) + ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) + ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS)
+                + ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CONTACTS)
+                + ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH)
+                + ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADMIN)
+                + ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS)
+                + ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                + ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                + ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
+                + ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
+                + ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS) || shouldShowRequestPermissionRationale(Manifest.permission.WRITE_CONTACTS) || shouldShowRequestPermissionRationale(Manifest.permission.BLUETOOTH) || shouldShowRequestPermissionRationale(Manifest.permission.BLUETOOTH_ADMIN) || shouldShowRequestPermissionRationale(Manifest.permission.RECEIVE_SMS) || shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE) || shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE) || shouldShowRequestPermissionRationale(Manifest.permission.READ_PHONE_STATE) || shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.READ_SMS)
+                        || ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.WRITE_CONTACTS)
+                        || ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.BLUETOOTH)
+                        || ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.BLUETOOTH_ADMIN)
+                        || ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.RECEIVE_SMS)
+                        || ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.READ_EXTERNAL_STORAGE)
+                        || ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        || ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.READ_PHONE_STATE)
+                        || ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.READ_CONTACTS)
+                        || ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.ACCESS_COARSE_LOCATION)
+                        )
+                {
                     Toast.makeText(this, "you need to check permission", Toast.LENGTH_SHORT).show();
                 }
             }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(new String[]{Manifest.permission.READ_SMS, Manifest.permission.WRITE_CONTACTS, Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CONTACTS}, REQUEST_PERMISSIONS);
+                ActivityCompat.requestPermissions(this,new String[]{
+                        Manifest.permission.READ_SMS,
+                        Manifest.permission.WRITE_CONTACTS,
+                        Manifest.permission.BLUETOOTH,
+                        Manifest.permission.BLUETOOTH_ADMIN,
+                        Manifest.permission.RECEIVE_SMS,
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_PHONE_STATE,
+                        Manifest.permission.READ_CONTACTS,
+                        Manifest.permission.ACCESS_COARSE_LOCATION},
+                        REQUEST_PERMISSIONS);
             }
         }
 
@@ -285,10 +298,10 @@ public class NavigationActivity extends AppCompatActivity
         else if(id==R.id.nav_feedback) {
             Intent gmail = new Intent(android.content.Intent.ACTION_SEND);
             gmail.putExtra(Intent.EXTRA_EMAIL, new String[] { "khandelwalparas8@gmail.com" });
-            gmail.setData(Uri.parse("khandelwalparas8@gmail.com"));
+            gmail.setDataAndType(Uri.parse("khandelwalparas8@gmail.com"),"message/rfc822");
             gmail.putExtra(Intent.EXTRA_SUBJECT, "Feedback for DroidWatch");
             gmail.putExtra(Intent.EXTRA_TEXT, "write feedback here");
-            gmail.setType("message/rfc822");
+
 
             startActivity(gmail);
         }
@@ -334,7 +347,9 @@ public class NavigationActivity extends AppCompatActivity
 
 
         if(requestCode==REQUEST_PERMISSIONS){
-            if((grantResults.length>0)&&(grantResults[0]+grantResults[2]+grantResults[3]+grantResults[4]+grantResults[5]+grantResults[6]+grantResults[7]+grantResults[8])==PackageManager.PERMISSION_GRANTED){
+            if((grantResults.length>0)&&(grantResults[0]+grantResults[2]
+                    +grantResults[3]+grantResults[4]+grantResults[5]+grantResults[6]+
+                    grantResults[7]+grantResults[8])==PackageManager.PERMISSION_GRANTED){
 
                 SharedPreferences sp = getSharedPreferences("permissions",MODE_PRIVATE);
                 boolean grant = sp.getBoolean("grantResult",false);
@@ -346,7 +361,6 @@ public class NavigationActivity extends AppCompatActivity
                 }
 
             }else {
-
                 Toast.makeText(this, "permission was not granted", Toast.LENGTH_LONG).show();
             }
         }

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/old_app_background"
+    android:padding="10dp"
+    >
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:orientation="vertical"
+       android:layout_height="match_parent">
+
+       <TextView
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:textSize="18sp"
+           android:textColor="@color/primary_light"
+           android:text="How much you recommend this app to your friend ?"
+           />
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content">
+
+           <TextView
+               android:layout_width="0dp"
+               android:layout_weight="1"
+               android:layout_height= "wrap_content"
+               android:layout_gravity="center"
+               android:textSize="18sp"
+               android:text="1"
+               android:textColor="@color/primary_light"
+               />
+           <SeekBar
+               android:id="@+id/seekbar"
+               android:layout_weight="8"
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:layout_margin="10dp"
+               android:max="10"
+               android:progress="1"
+               />
+           <TextView
+               android:layout_width="0dp"
+               android:layout_weight="1"
+               android:layout_height= "wrap_content"
+               android:layout_gravity="center"
+               android:textSize="18sp"
+               android:text="10"
+               android:textColor="@color/primary_light"
+               />
+       </LinearLayout>
+
+       <TextView
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:textSize="20sp"
+           android:textColor="@color/primary_light"
+           android:text="Did your last connection eastablished successfully ?"
+           />
+       <LinearLayout
+           android:layout_margin="10dp"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content">
+
+           <Button
+               android:textColor="@color/primary_light"
+               android:layout_weight="1"
+               android:background="@android:color/transparent"
+               android:layout_width="0dp"
+               android:text="Yes"
+               android:id="@+id/successful_yes"
+               android:layout_height="wrap_content" />
+           <Button
+               android:layout_weight="1"
+               android:textColor="@color/primary_light"
+               android:text="No"
+               android:id="@+id/successful_no"
+               android:background="@android:color/transparent"
+               android:layout_width="0dp"
+               android:layout_height="wrap_content" />
+
+       </LinearLayout>
+       <com.google.android.gms.ads.AdView
+           xmlns:ads="http://schemas.android.com/apk/res-auto"
+           android:id="@+id/feedbackAdView"
+           android:layout_height="250dp"
+           android:layout_width="match_parent"
+           ads:adSize="MEDIUM_RECTANGLE"
+           ads:adUnitId="@string/admob_feedback">
+       </com.google.android.gms.ads.AdView>
+
+       <Button
+           android:layout_marginTop="5dp"
+           android:layout_gravity="top"
+           android:text="Back to Device list"
+           android:textSize="20sp"
+           android:textColor="@color/primary_light"
+           android:background="@drawable/button"
+           android:id="@+id/backtodevicelist"
+           android:layout_margin="5dp"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content" />
+
+   </LinearLayout>
+</ScrollView>

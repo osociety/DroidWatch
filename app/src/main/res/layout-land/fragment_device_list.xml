@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:orientation="vertical" android:layout_width="match_parent"
-        android:background="@drawable/droid_watch_app_background"
+        android:background="@drawable/old_app_background"
         android:layout_height="match_parent">
 
         <LinearLayout

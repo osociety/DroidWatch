@@ -1,6 +1,7 @@
 package com.developers.paras.droidwatch;
 
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
@@ -13,9 +14,12 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -152,8 +156,9 @@ public class DeviceListFragment extends Fragment {
                     et.putString("hardware_address",data_paired[i1][1]);
                     et.apply();
 
-                    BackgroundTask task = new BackgroundTask((NavigationActivity) getActivity());
-                    task.execute();
+                    android.app.FragmentManager fm = getFragmentManager();
+
+                    new BackgroundTask().execute(fm);
                 }
 
             }
@@ -182,9 +187,9 @@ public class DeviceListFragment extends Fragment {
                     et.putString("hardware_address",data[i1][1]);
                     et.apply();
 
+                    android.app.FragmentManager fm = getFragmentManager();
 
-                    BackgroundTask task = new BackgroundTask((NavigationActivity) getActivity());
-                    task.execute();
+                    new BackgroundTask().execute(fm);
                 }
                 }
         });
@@ -204,7 +209,6 @@ public class DeviceListFragment extends Fragment {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 String deviceName = device.getName();
                 String deviceHardwareAddress = device.getAddress(); // MAC address
-
                 if(j>=8)
                 {
                     j=0;
@@ -227,38 +231,16 @@ public class DeviceListFragment extends Fragment {
        con.unregisterReceiver(mReceiver);
 
     }
-    private class BackgroundTask extends AsyncTask<Void, Void, Void> {
+    static private class BackgroundTask extends AsyncTask<Object, Void, Void> {
         private ProgressDialog dialog;
-
-        BackgroundTask(NavigationActivity activity) {
-            dialog = new ProgressDialog(activity);
-        }
-
         @Override
-        protected void onPreExecute() {
-            dialog.setMessage("Connecting, please wait...");
-            dialog.show();
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            if (dialog.isShowing()) {
-                dialog.dismiss();
-            }
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                Thread.sleep(2000);
-
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                Fragment f = new DeviceHomeFragment();
-                ft.replace(R.id.device_list_layout,f);
-                ft.commit();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        protected Void doInBackground(Object... objects) {
+            Looper.prepare();
+            android.app.FragmentManager fm = (android.app.FragmentManager) objects[0];
+            android.app.FragmentTransaction ft =fm.beginTransaction();
+            android.app.Fragment fragment = new DeviceHomeFragment();
+            ft.replace(R.id.device_list_layout,fragment);
+            ft.commit();
 
             return null;
         }
