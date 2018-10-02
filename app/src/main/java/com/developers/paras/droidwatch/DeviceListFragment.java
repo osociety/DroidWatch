@@ -1,10 +1,6 @@
 package com.developers.paras.droidwatch;
 
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
-import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -12,14 +8,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,7 +48,7 @@ public class DeviceListFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
        v= inflater.inflate(R.layout.fragment_device_list, container, false);
@@ -101,12 +97,6 @@ public class DeviceListFragment extends Fragment {
 
         con.registerReceiver(mReceiver, filter);
 
-       /* Intent discoverableIntent =
-                new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-        startActivity(discoverableIntent);
-*/
-        // Showing Paired devices
         getPairedDevices(badapter);
 
 
@@ -140,6 +130,7 @@ public class DeviceListFragment extends Fragment {
     public void showListPaired()
     {
 
+
         ListView lv = v.findViewById(R.id.device_list_paired);
 
         ArrayAdapter<String> ad = new ArrayAdapter<>(con,R.layout.simple_list_item,arr_paired);
@@ -156,9 +147,12 @@ public class DeviceListFragment extends Fragment {
                     et.putString("hardware_address",data_paired[i1][1]);
                     et.apply();
 
-                    android.app.FragmentManager fm = getFragmentManager();
-
-                    new BackgroundTask().execute(fm);
+                    FragmentManager fm = getFragmentManager();
+                    if(fm!=null){
+                        FragmentTransaction ft = fm.beginTransaction();
+                        ft.replace(R.id.device_list_layout,new DeviceHomeFragment());
+                        ft.commit();
+                    }
                 }
 
             }
@@ -178,6 +172,7 @@ public class DeviceListFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i1, long l) {
 
+
                 if(!arr[i1].equals(" "))
                 {
 
@@ -187,9 +182,13 @@ public class DeviceListFragment extends Fragment {
                     et.putString("hardware_address",data[i1][1]);
                     et.apply();
 
-                    android.app.FragmentManager fm = getFragmentManager();
+                    FragmentManager fm = getFragmentManager();
+                    if(fm!=null){
+                        FragmentTransaction ft = fm.beginTransaction();
+                        ft.replace(R.id.device_list_layout,new DeviceHomeFragment());
+                        ft.commit();
+                    }
 
-                    new BackgroundTask().execute(fm);
                 }
                 }
         });
@@ -229,21 +228,6 @@ public class DeviceListFragment extends Fragment {
         super.onDestroy();
 
        con.unregisterReceiver(mReceiver);
-
-    }
-    static private class BackgroundTask extends AsyncTask<Object, Void, Void> {
-        private ProgressDialog dialog;
-        @Override
-        protected Void doInBackground(Object... objects) {
-            Looper.prepare();
-            android.app.FragmentManager fm = (android.app.FragmentManager) objects[0];
-            android.app.FragmentTransaction ft =fm.beginTransaction();
-            android.app.Fragment fragment = new DeviceHomeFragment();
-            ft.replace(R.id.device_list_layout,fragment);
-            ft.commit();
-
-            return null;
-        }
 
     }
 

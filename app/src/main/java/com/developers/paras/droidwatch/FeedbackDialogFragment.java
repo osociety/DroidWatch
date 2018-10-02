@@ -1,13 +1,13 @@
 package com.developers.paras.droidwatch;
 
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +38,8 @@ public class FeedbackDialogFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        final FragmentManager fm = getFragmentManager();
+
         // activate the banner ad
         mAdview = v.findViewById(R.id.feedbackAdView);
         AdRequest adRequest = new AdRequest.Builder()
@@ -49,11 +51,12 @@ public class FeedbackDialogFragment extends Fragment {
         backToList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                android.app.FragmentManager fragmentManager = getFragmentManager();
-                final FragmentTransaction ft = fragmentManager.beginTransaction();
-                DeviceListFragment f = new DeviceListFragment();
-                ft.replace(R.id.device_list_layout, f);
-                ft.commit();
+
+                if(fm!=null){
+                    android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
+                    ft.replace(R.id.device_list_layout, new DeviceListFragment());
+                    ft.commit();
+                }
             }
         });
 
@@ -80,11 +83,11 @@ public class FeedbackDialogFragment extends Fragment {
         successfulNo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                android.app.FragmentManager fragmentManager = getFragmentManager();
-                final FragmentTransaction ft = fragmentManager.beginTransaction();
-                GuideToConnect guideToConnect = new GuideToConnect();
-                ft.replace(R.id.device_list_layout, guideToConnect);
-                ft.commit();
+                if(fm!=null){
+                    android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
+                    ft.replace(R.id.device_list_layout, new GuideToConnect());
+                    ft.commit();
+                }
             }
         });
     }

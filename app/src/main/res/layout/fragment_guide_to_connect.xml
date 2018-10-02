@@ -29,7 +29,7 @@
         <Button
             android:layout_marginTop="15dp"
             android:layout_gravity="top"
-            android:text="Back to Device list"
+            android:text="@string/back_to_device_list_label_guide_to"
             android:textSize="20sp"
             android:textColor="@color/primary_light"
             android:background="@drawable/button"

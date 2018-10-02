@@ -20,20 +20,18 @@
             <TextView
                 android:layout_margin="5dp"
                 android:layout_width="match_parent"
-                android:layout_weight="1"
                 android:textColor="@color/primary_light"
                 android:textSize="25sp"
-                android:layout_height="0dp"
-                android:text="Available Devices" />
+                android:layout_height="wrap_content"
+                android:text="@string/available_devices_label" />
             <TextView
                 android:layout_width="match_parent"
-                android:layout_weight="0.5"
                 android:textSize="17sp"
                 android:textColor="@color/secondary_text"
                 android:layout_marginBottom="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_height="0dp"
-                android:text="Choose HC-05 for Droid Watch " />
+                android:layout_marginStart="5dp"
+                android:layout_height="wrap_content"
+                android:text="@string/choose_hc_05_for_droid_watch_label" />
         </LinearLayout>
 
         <LinearLayout
@@ -42,8 +40,7 @@
             android:orientation="horizontal"
             android:layout_weight="7">
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="200dp"
                 android:orientation="vertical"
                 android:layout_height="match_parent">
 
@@ -55,23 +52,22 @@
                     android:textStyle="bold"
                     android:textColor="@color/primary_light"
                     android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
                     android:layout_height="0dp"
-                    android:text="Paired Devices " />
+                    android:text="@string/paired_devices_label" />
 
                 <ListView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="4"
                     android:layout_marginTop="5dp"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
                     android:id="@+id/device_list_paired"
-                    ></ListView>
+                    />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="200dp"
                 android:orientation="vertical"
                 android:layout_height="match_parent">
 
@@ -83,18 +79,18 @@
                     android:textAlignment="center"
                     android:textColor="@color/primary_light"
                     android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
                     android:layout_height="0dp"
-                    android:text="Available devices" />
+                    android:text="@string/available_devices_label" />
 
                 <ListView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="4"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
                     android:layout_marginTop="5dp"
                     android:id="@+id/device_list"
-                    ></ListView>
+                    />
             </LinearLayout>
         </LinearLayout>
 

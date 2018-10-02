@@ -4,8 +4,9 @@ package com.developers.paras.droidwatch;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.app.Fragment;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,17 +35,18 @@ public class GuideToConnect extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        final FragmentManager fm = getFragmentManager();
         Button back = v.findViewById(R.id.backtodevicelist1);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                android.app.FragmentManager fragmentManager = getFragmentManager();
-                final FragmentTransaction ft = fragmentManager.beginTransaction();
-                DeviceListFragment f = new DeviceListFragment();
-                ft.replace(R.id.device_list_layout, f);
-                ft.commit();
+
+                if (fm!=null){
+                    final android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
+                    ft.replace(R.id.device_list_layout, new DeviceListFragment());
+                    ft.commit();
+                }
             }
         });
-
     }
 }

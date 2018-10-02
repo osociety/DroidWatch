@@ -4,9 +4,8 @@
     android:layout_height="match_parent"
     tools:context="com.developers.paras.droidwatch.ArduinoFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <WebView
         android:layout_width="match_parent"
         android:id="@+id/web"
-        android:layout_height="match_parent"></WebView>
+        android:layout_height="match_parent"/>
 </FrameLayout>

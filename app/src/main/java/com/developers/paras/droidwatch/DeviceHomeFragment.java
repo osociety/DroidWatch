@@ -1,31 +1,24 @@
 package com.developers.paras.droidwatch;
 
-
-import android.annotation.SuppressLint;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
-import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.icu.util.Calendar;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Looper;
 import android.provider.ContactsContract;
 import android.provider.Telephony;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AlertDialog;
+import android.support.v4.app.FragmentTransaction;
 import android.telephony.PhoneStateListener;
 import android.telephony.SmsMessage;
 import android.telephony.TelephonyManager;
@@ -36,20 +29,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.ads.MobileAds;
-
-import org.w3c.dom.Text;
-
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Objects;
 import java.util.UUID;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
-
-import static android.content.ContentValues.TAG;
 import static android.content.Context.MODE_PRIVATE;
 
 
@@ -63,13 +46,17 @@ public class DeviceHomeFragment extends Fragment {
     private String INCOMING_NUMBER = null;
     private String INCOMING_MESSAGE_BODY =null;
     private String INCOMING_MESSAGE_NUMBER =null;
-    private static final String ADMOB_ID = "ca-app-pub-9074226798924140/8780544128";
-
-    private static final String ADMOB_ID_TEST = "ca-app-pub-3940256099942544/1033173712";
 
     TelephonyManager tmg=null;
     CallStateListener callstate=null;
     ConnectThread conthread = null;
+    String deviceLabel = "Device : ";
+    String data_sending = "Data : Sending";
+    String data_not_sending = "Data : Not Sending";
+    String status_not_connected = "Status : Not Connected";
+    String status_connected = "Status : Connected";
+    TextView device_data;
+    TextView device_status;
 
     View v;
     Context con=null;
@@ -85,7 +72,7 @@ public class DeviceHomeFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         v=inflater.inflate(R.layout.fragment_device_home, container, false);
@@ -96,6 +83,8 @@ public class DeviceHomeFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+         final FragmentManager fm = getFragmentManager();
 
         SharedPreferences sp = con.getSharedPreferences("device_info",MODE_PRIVATE);
         final String address = sp.getString("hardware_address",null);
@@ -128,41 +117,44 @@ public class DeviceHomeFragment extends Fragment {
 
         final Button disconnect =  v.findViewById(R.id.disconnect);
         final TextView device_name =  v.findViewById(R.id.device_name);
-        final TextView device_status =  v.findViewById(R.id.device_status);
-        final TextView device_data =  v.findViewById(R.id.device_data);
+        device_status = v.findViewById(R.id.device_status);
+        device_data = v.findViewById(R.id.device_data);
         Button reconnect =  v.findViewById(R.id.reconnect);
 
 
         //Trying to connect with bluetooth device
             conthread.run();
 
-
+           String deviceName = deviceLabel+name;
             // Setting the name on the TextView
-            device_name.setText("Name : "+name);
+            device_name.setText(deviceName);
 
             // Setting the Status on the TextView
             if(!conthread.getStatus())
             {
-                device_status.setText("Status : Not Connected");
+                device_status.setText(status_not_connected);
+                device_data.setText(data_not_sending);
                 Log.d("mybt","Status not connected");
 
 
             } else if(conthread.getStatus())
             {
-                device_status.setText("Status : Connected");
+                device_status.setText(status_connected);
+                device_data.setText(data_sending);
                 Log.d("mybt","Status connected");
-
-                sendSignals(device_status,device_data);
+                Log.d("mybt","lets start");
+                sendSignals();
             }
 
+        final FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
 
-            //Closing the Connection on button click
+        //Closing the Connection on button click
             reconnect.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Toast.makeText(con, "Reconnecting. Please wait a moment.", Toast.LENGTH_SHORT).show();
                     //******SENDING CONTROL BACK TO DEVICE LIST*************
-                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+
                     ft.replace(R.id.device_list_layout, new DeviceHomeFragment());
                     ft.commit();
                 }
@@ -175,31 +167,30 @@ public class DeviceHomeFragment extends Fragment {
 
                     conthread.cancel();
                     conthread.setStatus(false);
-                    device_status.setText("Status : Not Connected");
+                    device_status.setText(status_not_connected);
+
 
                     SharedPreferences sp = con.getSharedPreferences("device_info",MODE_PRIVATE);
                     final SharedPreferences.Editor et = sp.edit();
                     et.clear();
                     et.apply();
 
-                    android.app.FragmentManager fragmentManager = getFragmentManager();
-                    final FragmentTransaction ft = fragmentManager.beginTransaction();
-                    FeedbackDialogFragment f = new FeedbackDialogFragment();
-                    ft.replace(R.id.device_list_layout, f);
+                    ft.replace(R.id.device_list_layout, new FeedbackDialogFragment());
                     ft.commit();
 
                 }
             });
 
     }
-    public void sendSignals(TextView device_status, TextView device_data){
-        device_status.setText("Status : Connected");
-        device_data.setText("Data : Sending");
-
+    public void sendSignals(){
+        device_status.setText(status_connected);
+        device_data.setText(data_sending);
+        Log.d("mybt","inside send signal");
         MyBluetoothService.ConnectedThread connectedThread =
                 new MyBluetoothService.ConnectedThread(conthread.getSocket());
 
         while (true) {
+            Log.d("mybt","iterations going on");
             if(CALL_STATE_RING==1)
             {
                 Log.d("mybt","Phone is ringing");
@@ -246,8 +237,10 @@ public class DeviceHomeFragment extends Fragment {
         INCOMING_MESSAGE_BODY =null;
         INCOMING_MESSAGE_NUMBER =null;
 
-        device_status.setText("Status : Not Connected");
-        device_data.setText("Data : Not Sending");
+
+        device_status.setText(status_not_connected);
+
+        device_data.setText(data_not_sending);
     }
 
 
@@ -321,10 +314,10 @@ class ConnectThread extends Thread {
     private BluetoothSocket mmSocketFallback;
     private static boolean SUCCESS = false;
 
-    public boolean getStatus() {
+    boolean getStatus() {
         return SUCCESS;
     }
-    public void setStatus(boolean value) {
+    void setStatus(boolean value) {
         SUCCESS=value;
     }
 
@@ -356,7 +349,8 @@ class ConnectThread extends Thread {
         // Cancel discovery because it otherwise slows down the connection.
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         mBluetoothAdapter.cancelDiscovery();
-        BluetoothSocket tmp = null;
+        Log.d("mybt","discovery cancelled");
+        BluetoothSocket tmp;
         tmp=mmSocket;
         try
         {
@@ -375,7 +369,7 @@ class ConnectThread extends Thread {
             // Connect to the remote device through the socket. This call blocks
             // until it succeeds or throws an exception.
             mmSocketFallback.connect();
-            SUCCESS=true;
+            setStatus(true);
         } catch (IOException connectException) {
             // Unable to connect; close the socket and return.
             Log.d("mybt","Closing connection due to : "+connectException);
@@ -385,15 +379,8 @@ class ConnectThread extends Thread {
                 Log.d("mybt", "Could not close the client socket due to : "+closeException, closeException);
             }
         }
-
-        // The connection attempt succeeded. Perform work associated with
-        // the connection in a separate thread.
-       
-
-  //      manageMyConnectedSocket(mmSocket);
     }
 
-    // Closes the client socket and causes the thread to finish.
     void cancel() {
         try {
             mmSocketFallback.close();

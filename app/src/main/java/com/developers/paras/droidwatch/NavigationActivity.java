@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -27,17 +28,14 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
-import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.ads.MobileAds;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -90,10 +88,9 @@ public class NavigationActivity extends AppCompatActivity
                 .build();
         eAdview.loadAd(adRequestexit);
 
-
-        android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
-        DeviceListFragment f = new DeviceListFragment();
-        ft.add(R.id.device_list_layout, f);
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.add(R.id.device_list_layout, new DeviceListFragment());
         ft.commit();
 
 
@@ -262,6 +259,9 @@ public class NavigationActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+
         int id = item.getItemId();
 
         if (id == R.id.nav_log) {
@@ -308,8 +308,16 @@ public class NavigationActivity extends AppCompatActivity
         else if (id == R.id.nav_arduino) {
 
 
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.device_list_layout, new ArduinoFragment());
+            ft.addToBackStack("stack");
+            ft.commit();
+
+
+        }
+        else if (id == R.id.nav_troubleshoot) {
+
+
+            ft.replace(R.id.device_list_layout, new GuideToConnect());
             ft.addToBackStack("stack");
             ft.commit();
 
@@ -317,7 +325,6 @@ public class NavigationActivity extends AppCompatActivity
         }
         else if (id == R.id.nav_about) {
 
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.device_list_layout, new AboutAppFragment());
             ft.addToBackStack("stack");
             ft.commit();

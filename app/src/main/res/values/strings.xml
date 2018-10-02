@@ -7,14 +7,47 @@
 
     <string name="action_settings">Settings</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="notification">This will turn off all the text and call notifications on Droid Watch</string>
     <string name="vibrations">This will turn off the vibrations for the text and call on the Droid Watch.</string>
     <string name="time_sync">This will turn off the Time Sync on the Droid Watch. See this feature is essential for watch but available here to explore</string>
-
     <string name="aboutapp">This app is created as a project of SmartWatch from which you can connect your arduino maded watch. This app will help you to send the time, call, and msg to your watch over the bluetooth. If you are facing problem in connecting to bluetooth module then first pair it in mobile settings and then use this app.\n\n This app will help you manage the vibrations, time sync, call and sms notifications in the future update, I"m working on it and complete it as soon as possible.\n\n You can also see this project github repo and edit this app for the development and learning.</string>
     <string name="points_list">1. Rx and Tx of watch are connected to the pins mentioned in arduino code. (listed at the start of code ).\n\n2. Make sure you don\'t kill this app, as it would disconnect from watch. You can minimize this app.\n\n3. You can turn on serial monitor in arduino to check if it prints the string received from app or not.</string>
     <string name="guide_intro">If you are facing issue regarding connectivity to app. Please make sure these points meet.</string>
+    <string name="data_label_device_home">Data:</string>
+    <string name="status_label_device_home">Status:</string>
+    <string name="device_label_device_home">Device:</string>
+    <string name="device_help_label_device_home">If you see No device due to some reasons then Disconnect and pair again.</string>
+    <string name="status_help_label_device_home">If the device is not Connected try Reconnecting the device. Make sure the watch is on.</string>
+    <string name="data_help_label_device_home">If the device is not sending data then try to reconnect or pair again.</string>
+    <string name="reconnect_button_label">Reconnect</string>
+    <string name="disconnect_button_label">Disconnect</string>
+    <string name="back_to_device_list_button_label">Back to Device list</string>
+    <string name="about_the_app_label">About the app</string>
+    <string name="available_devices_label">Available Devices</string>
+    <string name="choose_hc_05_for_droid_watch_label">Choose HC-05 for Droid Watch</string>
+    <string name="paired_devices_label">Paired Devices</string>
+    <string name="device_not_found_error_label">If do not find your device. Please pair device in Android Settings.</string>
+    <string name="av_devices_label">Available devices</string>
+    <string name="back_to_device_list_label_guide_to">Back to Device list</string>
+    <string name="settings_feature_coming_soon">Settings - Feature Coming soon</string>
+    <string name="enable_notifications">Enable notifications</string>
+    <string name="vibrations_label">Vibrations</string>
+    <string name="time_sync_label">Time Sync</string>
+    <string name="paras_khandelwal_drawer_label">Paras khandelwal</string>
+    <string name="developer_label">Developer</string>
+    <string name="logcat">Logcat</string>
+    <string name="send_bug_report">Send Bug Report</string>
+    <string name="arduino_guide">Arduino Guide</string>
+    <string name="troubleshooting">Troubleshooting</string>
+    <string name="about_app">About App</string>
+    <string name="communicate">Communicate</string>
+    <string name="share">Share</string>
+    <string name="feedback">Feedback</string>
+    <string name="did_your_last_connection_eastablished_successfully">Did your last connection eastablished successfully ?</string>
+    <string name="how_much_you_recommend_this_app_to_your_friend">How much you recommend this app to your friend ?</string>
+    <string name="rating_1">1</string>
+    <string name="rating_10">10</string>
+    <string name="last_connection_yes_button_label">Yes</string>
+    <string name="last_connection_no_button_label">No</string>
 
 </resources>
