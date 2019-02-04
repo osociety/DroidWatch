@@ -26,18 +26,19 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-
-import com.crashlytics.android.Crashlytics;
+//import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+//import io.fabric.sdk.android.Fabric;
 
-import io.fabric.sdk.android.Fabric;
 
 public class NavigationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -45,7 +46,6 @@ public class NavigationActivity extends AppCompatActivity
     private static final int REQUEST_ENABLE_BT =2 ;
     private static final int REQUEST_PERMISSIONS = 10;
     private static final String appURL = "https://play.google.com/store/apps/details?id=com.developers.paras.droidwatch";
-    InterstitialAd mInterstitialAd;
     private AdView mAdview;
     private AdView eAdview;
     AlertDialog.Builder alertDialogBuilder;
@@ -54,8 +54,11 @@ public class NavigationActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
+       // Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_navigation);
+        String admob_app_id = getResources().getString(R.string.app_id);
+
+        MobileAds.initialize(this,admob_app_id);
 
         Toolbar toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -69,12 +72,11 @@ public class NavigationActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        String admob_app_id = getResources().getString(R.string.app_id);
 
         // activate the banner ad
         mAdview = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder()
-                //.addTestDevice("AEFC456A34FE13104011258A25947901")
+                .addTestDevice("038E382011FDA83824D4A2F832132730")
                 .build();
         mAdview.loadAd(adRequest);
 
@@ -84,9 +86,55 @@ public class NavigationActivity extends AppCompatActivity
         eAdview.setAdUnitId(admob_exit_id);
 
         AdRequest adRequestexit = new AdRequest.Builder()
-                //.addTestDevice("AEFC456A34FE13104011258A25947901")
+                .addTestDevice("038E382011FDA83824D4A2F832132730")
                 .build();
         eAdview.loadAd(adRequestexit);
+
+        eAdview.setAdListener(new AdListener(){
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // Code to be executed when an ad request fails.
+            }
+
+            @Override
+            public void onAdOpened() {
+                if(dialog.isShowing()){
+                    dialog.dismiss();
+                }
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when when the interstitial ad is closed.
+            }
+        });
+
+        alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setView(eAdview).setCancelable(false)
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        dialog.dismiss();
+                    }
+                })
+                .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                });
+        dialog = alertDialogBuilder.create();
 
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
@@ -143,6 +191,7 @@ public class NavigationActivity extends AppCompatActivity
     @Override
     public void onResume() {
         super.onResume();
+
         mAdview.resume();
     }
 
@@ -202,23 +251,6 @@ public class NavigationActivity extends AppCompatActivity
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
-
-        alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setView(eAdview).setCancelable(false)
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        })
-                .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-        });
-        dialog = alertDialogBuilder.create();
-
     }
 
     @Override
@@ -227,7 +259,9 @@ public class NavigationActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            dialog.show();
+            if(!dialog.isShowing()){
+                dialog.show();
+            }
         }
     }
 
@@ -348,6 +382,7 @@ public class NavigationActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

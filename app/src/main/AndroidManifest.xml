@@ -17,15 +17,16 @@
 
     <application
         android:allowBackup="true"
+        android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher_foreground"
         android:label="@string/app_name"
-        android:fullBackupContent="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-9074226798924140~6772370028"/>
+            android:value="ca-app-pub-9074226798924140~6772370028" />
+
         <activity
             android:name=".NavigationActivity"
             android:label="Droid Watch"
@@ -42,9 +43,9 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="https"
                     android:host="parasasblog.wordpress.com"
-                    android:pathPattern="/2017/08/26/how-to-make-smart-watch-using-arduino-and-android-phone/" />
+                    android:pathPattern="/2017/08/26/how-to-make-smart-watch-using-arduino-and-android-phone/"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
         <activity android:name=".ReadLogDemo">

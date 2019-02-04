@@ -49,5 +49,6 @@
     <string name="rating_10">10</string>
     <string name="last_connection_yes_button_label">Yes</string>
     <string name="last_connection_no_button_label">No</string>
+    <string name="pair_setting_issue">4. If you face problem regarding pairing. Pair it from device settings, it will work.</string>
 
 </resources>

@@ -17,7 +17,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-
 public class FeedbackDialogFragment extends Fragment {
     View v;
     Context con;
@@ -26,6 +25,7 @@ public class FeedbackDialogFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         con = context;
+
     }
 
     @Nullable
@@ -43,9 +43,10 @@ public class FeedbackDialogFragment extends Fragment {
         // activate the banner ad
         mAdview = v.findViewById(R.id.feedbackAdView);
         AdRequest adRequest = new AdRequest.Builder()
-                //.addTestDevice("AEFC456A34FE13104011258A25947901")
+                .addTestDevice("038E382011FDA83824D4A2F832132730")
                 .build();
         mAdview.loadAd(adRequest);
+
 
         Button backToList = v.findViewById(R.id.backtodevicelist);
         backToList.setOnClickListener(new View.OnClickListener() {
@@ -69,6 +70,7 @@ public class FeedbackDialogFragment extends Fragment {
                 final String appPackageName = con.getPackageName(); // getPackageName() from Context or Activity object
                 if(seekBar.getProgress()>4){
                     try {
+                        Toast.makeText(con, "Please rate my app if you loved working with this app and project.", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
                     } catch (android.content.ActivityNotFoundException anfe) {
                         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
@@ -91,4 +93,5 @@ public class FeedbackDialogFragment extends Fragment {
             }
         });
     }
+
 }

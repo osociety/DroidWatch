@@ -22,6 +22,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import java.util.Objects;
 import java.util.Set;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -104,6 +106,7 @@ public class DeviceListFragment extends Fragment {
     public void getPairedDevices(BluetoothAdapter badapter){
         Set<BluetoothDevice> pairedDevices = badapter.getBondedDevices();
 
+
         if (pairedDevices.size() > 0) {
             // There are paired devices. Get the name and address of each paired device.
             for (BluetoothDevice device : pairedDevices) {
@@ -119,16 +122,17 @@ public class DeviceListFragment extends Fragment {
                 data_paired[i][1]=deviceHardwareAddress;
 
                 arr_paired[i++]=deviceName+"\n"+deviceHardwareAddress;
-
-                showListPaired();
-
             }
         }
+        showListPaired();
 
     }
 
     public void showListPaired()
     {
+
+        final FragmentManager fm = getFragmentManager();
+        final FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
 
 
         ListView lv = v.findViewById(R.id.device_list_paired);
@@ -147,12 +151,9 @@ public class DeviceListFragment extends Fragment {
                     et.putString("hardware_address",data_paired[i1][1]);
                     et.apply();
 
-                    FragmentManager fm = getFragmentManager();
-                    if(fm!=null){
-                        FragmentTransaction ft = fm.beginTransaction();
                         ft.replace(R.id.device_list_layout,new DeviceHomeFragment());
                         ft.commit();
-                    }
+
                 }
 
             }
@@ -163,6 +164,9 @@ public class DeviceListFragment extends Fragment {
 
     public void showList()
     {
+
+        final FragmentManager fm = getFragmentManager();
+        final FragmentTransaction ft = Objects.requireNonNull(fm).beginTransaction();
 
         ListView lv =  v.findViewById(R.id.device_list);
 
@@ -182,12 +186,8 @@ public class DeviceListFragment extends Fragment {
                     et.putString("hardware_address",data[i1][1]);
                     et.apply();
 
-                    FragmentManager fm = getFragmentManager();
-                    if(fm!=null){
-                        FragmentTransaction ft = fm.beginTransaction();
                         ft.replace(R.id.device_list_layout,new DeviceHomeFragment());
                         ft.commit();
-                    }
 
                 }
                 }
