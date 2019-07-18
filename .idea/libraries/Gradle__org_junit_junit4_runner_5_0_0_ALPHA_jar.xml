@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.junit:junit4-runner:5.0.0-ALPHA@jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.junit/junit4-runner/5.0.0-ALPHA/f436a5fdfb9b633deb158c8b7eb7c55ad3b421f1/junit4-runner-5.0.0-ALPHA.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.junit/junit4-runner/5.0.0-ALPHA/3426342f906041829a3f1bac6153bc2f4a1e8f87/junit4-runner-5.0.0-ALPHA-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

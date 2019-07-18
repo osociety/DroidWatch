@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.junit:junit-engine-api:5.0.0-ALPHA@jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.junit/junit-engine-api/5.0.0-ALPHA/39790297bd312e0e6d2f83629558a18adc41e5ab/junit-engine-api-5.0.0-ALPHA.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.junit/junit-engine-api/5.0.0-ALPHA/c7c5a6fd0eb81142674cfe0d33cc55c58aabdf9c/junit-engine-api-5.0.0-ALPHA-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
