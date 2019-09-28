@@ -220,7 +220,7 @@ while(mySerial.available()>0){
  
 
   /* read the information from android app in the format
-   * 05:07:54:am\01\0paras\07042772660\01\07042772660\0this is the demo text\0
+   * 05:07:54:am\01\0paras\070427xxxxx\01\070427xxxxx\0this is the demo text\0
    * be careful that \0 belongs to null in the above string received 
    * from the app
   */
