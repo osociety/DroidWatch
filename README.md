@@ -37,7 +37,7 @@ You can run this project from within the android studio or build and apk and the
 
 ### Read the full instructions here on How to build DroidWatch
 
-* [parasasblog](https://parasasblog.wordpress.com/2017/08/26/how-to-make-smart-watch-using-arduino-and-android-phone/) - Follow my blog too.
+* [TechXSpace](https://techxspace.wordpress.com/2017/08/26/how-to-make-smart-watch-using-arduino-and-android-phone/) - Follow my blog too.
 
 ### Watch my video for the demonstration of the making
 
@@ -51,10 +51,6 @@ You can run this project from within the android studio or build and apk and the
     <td><img src="docs/screenshots/droidwatchconnectedscreen.png" height = "480" width="270"></td>
   </tr>
 </table>
-
-## Authors
-
-* **Paras Khandelwal** - *Initial work* - [project-aptron](https://github.com/parasthekoder/project_aptron)
 
 ## License
 
