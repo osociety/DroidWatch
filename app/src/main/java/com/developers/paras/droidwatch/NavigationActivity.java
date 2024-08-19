@@ -10,19 +10,19 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.navigation.NavigationView;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -31,7 +31,6 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 
 import java.io.BufferedReader;
@@ -56,9 +55,9 @@ public class NavigationActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
        // Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_navigation);
-        String admob_app_id = getResources().getString(R.string.app_id);
+//        String admob_app_id = getResources().getString(R.string.app_id);
 
-        MobileAds.initialize(this,admob_app_id);
+//        MobileAds.initialize(this,admob_app_id);
 
         Toolbar toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -73,51 +72,51 @@ public class NavigationActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        // activate the banner ad
-        mAdview = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice("038E382011FDA83824D4A2F832132730")
-                .build();
-        mAdview.loadAd(adRequest);
-
-        String admob_exit_id = getResources().getString(R.string.admob_exit);
-        eAdview = new AdView(this);
-        eAdview.setAdSize(AdSize.MEDIUM_RECTANGLE);
-        eAdview.setAdUnitId(admob_exit_id);
-
-        AdRequest adRequestexit = new AdRequest.Builder()
-                .addTestDevice("038E382011FDA83824D4A2F832132730")
-                .build();
-        eAdview.loadAd(adRequestexit);
-
-        eAdview.setAdListener(new AdListener(){
-            @Override
-            public void onAdLoaded() {
-                // Code to be executed when an ad finishes loading.
-            }
-
-            @Override
-            public void onAdFailedToLoad(int errorCode) {
-                // Code to be executed when an ad request fails.
-            }
-
-            @Override
-            public void onAdOpened() {
-                if(dialog.isShowing()){
-                    dialog.dismiss();
-                }
-            }
-
-            @Override
-            public void onAdLeftApplication() {
-                // Code to be executed when the user has left the app.
-            }
-
-            @Override
-            public void onAdClosed() {
-                // Code to be executed when when the interstitial ad is closed.
-            }
-        });
+//        // activate the banner ad
+//        mAdview = findViewById(R.id.adView);
+//        AdRequest adRequest = new AdRequest.Builder()
+//                .addTestDevice("038E382011FDA83824D4A2F832132730")
+//                .build();
+//        mAdview.loadAd(adRequest);
+//
+//        String admob_exit_id = getResources().getString(R.string.admob_exit);
+//        eAdview = new AdView(this);
+//        eAdview.setAdSize(AdSize.MEDIUM_RECTANGLE);
+//        eAdview.setAdUnitId(admob_exit_id);
+//
+//        AdRequest adRequestexit = new AdRequest.Builder()
+//                .addTestDevice("038E382011FDA83824D4A2F832132730")
+//                .build();
+//        eAdview.loadAd(adRequestexit);
+//
+//        eAdview.setAdListener(new AdListener(){
+//            @Override
+//            public void onAdLoaded() {
+//                // Code to be executed when an ad finishes loading.
+//            }
+//
+//            @Override
+//            public void onAdFailedToLoad(int errorCode) {
+//                // Code to be executed when an ad request fails.
+//            }
+//
+//            @Override
+//            public void onAdOpened() {
+//                if(dialog.isShowing()){
+//                    dialog.dismiss();
+//                }
+//            }
+//
+//            @Override
+//            public void onAdLeftApplication() {
+//                // Code to be executed when the user has left the app.
+//            }
+//
+//            @Override
+//            public void onAdClosed() {
+//                // Code to be executed when when the interstitial ad is closed.
+//            }
+//        });
 
         alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setView(eAdview).setCancelable(false)
@@ -255,11 +254,12 @@ public class NavigationActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            if(!dialog.isShowing()){
+            if (!dialog.isShowing()) {
                 dialog.show();
             }
         }

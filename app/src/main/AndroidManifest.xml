@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.developers.paras.droidwatch">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS>" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -30,6 +31,7 @@
         <activity
             android:name=".NavigationActivity"
             android:label="Droid Watch"
+            android:exported="true"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -48,7 +50,8 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
-        <activity android:name=".ReadLogDemo">
+        <activity android:name=".ReadLogDemo"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>

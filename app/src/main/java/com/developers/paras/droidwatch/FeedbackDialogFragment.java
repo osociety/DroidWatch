@@ -4,10 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,11 +43,11 @@ public class FeedbackDialogFragment extends Fragment {
         final FragmentManager fm = getFragmentManager();
 
         // activate the banner ad
-        mAdview = v.findViewById(R.id.feedbackAdView);
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice("038E382011FDA83824D4A2F832132730")
-                .build();
-        mAdview.loadAd(adRequest);
+//        mAdview = v.findViewById(R.id.feedbackAdView);
+//        AdRequest adRequest = new AdRequest.Builder()
+//                .addTestDevice("038E382011FDA83824D4A2F832132730")
+//                .build();
+//        mAdview.loadAd(adRequest);
 
 
         Button backToList = v.findViewById(R.id.backtodevicelist);
@@ -54,7 +56,7 @@ public class FeedbackDialogFragment extends Fragment {
             public void onClick(View v) {
 
                 if(fm!=null){
-                    android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
+                    FragmentTransaction ft = fm.beginTransaction();
                     ft.replace(R.id.device_list_layout, new DeviceListFragment());
                     ft.commit();
                 }
@@ -86,7 +88,7 @@ public class FeedbackDialogFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(fm!=null){
-                    android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
+                    FragmentTransaction ft = fm.beginTransaction();
                     ft.replace(R.id.device_list_layout, new GuideToConnect());
                     ft.commit();
                 }
