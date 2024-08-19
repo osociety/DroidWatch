@@ -10,34 +10,38 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
-import com.google.android.material.navigation.NavigationView;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-//import com.crashlytics.android.Crashlytics;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.material.navigation.NavigationView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-//import io.fabric.sdk.android.Fabric;
-
 
 public class NavigationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -55,9 +59,11 @@ public class NavigationActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
        // Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_navigation);
-//        String admob_app_id = getResources().getString(R.string.app_id);
+        String admob_app_id = getResources().getString(R.string.app_id);
 
-//        MobileAds.initialize(this,admob_app_id);
+        MobileAds.initialize(this, initializationStatus -> {
+            return;
+        });
 
         Toolbar toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -73,50 +79,40 @@ public class NavigationActivity extends AppCompatActivity
 
 
 //        // activate the banner ad
-//        mAdview = findViewById(R.id.adView);
-//        AdRequest adRequest = new AdRequest.Builder()
+        mAdview = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
 //                .addTestDevice("038E382011FDA83824D4A2F832132730")
-//                .build();
-//        mAdview.loadAd(adRequest);
-//
-//        String admob_exit_id = getResources().getString(R.string.admob_exit);
-//        eAdview = new AdView(this);
-//        eAdview.setAdSize(AdSize.MEDIUM_RECTANGLE);
-//        eAdview.setAdUnitId(admob_exit_id);
-//
-//        AdRequest adRequestexit = new AdRequest.Builder()
+                .build();
+        mAdview.loadAd(adRequest);
+
+        String admob_exit_id = getResources().getString(R.string.admob_exit);
+        eAdview = new AdView(this);
+        eAdview.setAdSize(AdSize.MEDIUM_RECTANGLE);
+        eAdview.setAdUnitId(admob_exit_id);
+
+        AdRequest adRequestexit = new AdRequest.Builder()
 //                .addTestDevice("038E382011FDA83824D4A2F832132730")
-//                .build();
-//        eAdview.loadAd(adRequestexit);
-//
-//        eAdview.setAdListener(new AdListener(){
-//            @Override
-//            public void onAdLoaded() {
-//                // Code to be executed when an ad finishes loading.
-//            }
-//
-//            @Override
-//            public void onAdFailedToLoad(int errorCode) {
-//                // Code to be executed when an ad request fails.
-//            }
-//
-//            @Override
-//            public void onAdOpened() {
-//                if(dialog.isShowing()){
-//                    dialog.dismiss();
-//                }
-//            }
-//
-//            @Override
-//            public void onAdLeftApplication() {
-//                // Code to be executed when the user has left the app.
-//            }
-//
-//            @Override
-//            public void onAdClosed() {
-//                // Code to be executed when when the interstitial ad is closed.
-//            }
-//        });
+                .build();
+        eAdview.loadAd(adRequestexit);
+
+        eAdview.setAdListener(new AdListener(){
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+            }
+
+            @Override
+            public void onAdOpened() {
+                if(dialog.isShowing()){
+                    dialog.dismiss();
+                }
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when when the interstitial ad is closed.
+            }
+        });
 
         alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setView(eAdview).setCancelable(false)
@@ -139,14 +135,6 @@ public class NavigationActivity extends AppCompatActivity
         FragmentTransaction ft = fm.beginTransaction();
         ft.add(R.id.device_list_layout, new DeviceListFragment());
         ft.commit();
-
-
-
-        // ATTENTION: This was auto-generated to handle app links.
-//        Intent appLinkIntent = getIntent();
-//        String appLinkAction = appLinkIntent.getAction();
-//        Uri appLinkData = appLinkIntent.getData();
-
     }
 
     @Override

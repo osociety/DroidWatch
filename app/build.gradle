@@ -1,12 +1,18 @@
 apply plugin: 'com.android.application'
 
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
     signingConfigs {
-        config {
-            keyAlias 'alias_name'
-            keyPassword 'droidwatchkey@123'
-            storeFile file('/home/paras/keys/my-release-key.keystore')
-            storePassword 'droidwatchkey@123'
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storePassword keystoreProperties['storePassword']
         }
     }
     defaultConfig {
@@ -14,8 +20,8 @@ android {
         minSdkVersion 21
         compileSdk 35
         targetSdkVersion 35
-        versionCode 21
-        versionName "21.0"
+        versionCode 28
+        versionName "28.0"
         multiDexEnabled true
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
@@ -39,7 +45,7 @@ android {
             resValue 'string', 'admob_feedback', '"ca-app-pub-9074226798924140/9465931603"'
             resValue 'string', 'app_id', '"ca-app-pub-9074226798924140~6772370028"'
             resValue 'string', 'admob_reward', '"ca-app-pub-9074226798924140/9406867331"'
-            signingConfig signingConfigs.config
+            signingConfig signingConfigs.release
         }
     }
     namespace 'com.developers.paras.droidwatch'
@@ -57,10 +63,6 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.android.gms:play-services-ads:23.3.0'
     implementation 'com.google.firebase:firebase-core:21.1.1'
-//    implementation('com.crashlytics.sdk.android:crashlytics:2.9.8@aar') {
-//        transitive = true;
-//    }
     testImplementation 'junit:junit:4.13.2'
 }
 apply plugin: 'com.google.gms.google-services'
-//apply plugin: 'io.fabric'

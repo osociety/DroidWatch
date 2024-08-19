@@ -3,6 +3,7 @@ package com.developers.paras.droidwatch;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -39,9 +40,11 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.UUID;
 
-//import com.google.android.gms.ads.AdRequest;
-//import com.google.android.gms.ads.MobileAds;
-//import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -56,7 +59,7 @@ public class DeviceHomeFragment extends Fragment {
 
     TelephonyManager tmg = null;
     CallStateListener callstate = null;
-//    private RewardedVideoAd mRewardedVideoAd;
+    private InterstitialAd mInterstitialAd;
 
     View v;
     Context con = null;
@@ -87,12 +90,20 @@ public class DeviceHomeFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         String admob_reward_id = getResources().getString(R.string.admob_reward);
 
-//        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(con);
-//        mRewardedVideoAd.loadAd(admob_reward_id,
-//                new AdRequest.Builder()
-//                        .addTestDevice("038E382011FDA83824D4A2F832132730")
-//                        .build());
+        AdRequest adRequest = new AdRequest.Builder().build();
+        InterstitialAd.load(con, admob_reward_id, adRequest, new InterstitialAdLoadCallback() {
+            @Override
+            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                super.onAdFailedToLoad(loadAdError);
 
+            }
+
+            @Override
+            public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                super.onAdLoaded(interstitialAd);
+                mInterstitialAd = interstitialAd;
+            }
+        });
 
         SharedPreferences sp = con.getSharedPreferences("device_info", MODE_PRIVATE);
         final String address = sp.getString("hardware_address", null);
@@ -168,9 +179,10 @@ public class DeviceHomeFragment extends Fragment {
                 SharedPreferences.Editor et = sp.edit();
                 et.clear();
 
-//                if (mRewardedVideoAd.isLoaded()) {
-//                    mRewardedVideoAd.show();
-//                }
+                if(mInterstitialAd != null){
+                    mInterstitialAd.show((Activity) con);
+                }
+
                 //******SENDING CONTROL BACK TO DEVICE LIST*************
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.device_list_layout, new FeedbackDialogFragment());
@@ -179,18 +191,6 @@ public class DeviceHomeFragment extends Fragment {
         });
 
 
-    }
-
-    @Override
-    public void onResume() {
-//        mRewardedVideoAd.resume(con);
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-//        mRewardedVideoAd.pause(con);
-        super.onPause();
     }
 
     class BackgroundTask extends AsyncTask<Void, Void, Void> {
@@ -350,7 +350,6 @@ public class DeviceHomeFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-//        mRewardedVideoAd.destroy(con);
         tmg.listen(callstate, PhoneStateListener.LISTEN_NONE);
         con.unregisterReceiver(msgReceiver);
 

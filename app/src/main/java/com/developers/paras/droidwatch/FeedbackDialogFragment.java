@@ -43,11 +43,11 @@ public class FeedbackDialogFragment extends Fragment {
         final FragmentManager fm = getFragmentManager();
 
         // activate the banner ad
-//        mAdview = v.findViewById(R.id.feedbackAdView);
-//        AdRequest adRequest = new AdRequest.Builder()
+        mAdview = v.findViewById(R.id.feedbackAdView);
+        AdRequest adRequest = new AdRequest.Builder()
 //                .addTestDevice("038E382011FDA83824D4A2F832132730")
-//                .build();
-//        mAdview.loadAd(adRequest);
+                .build();
+        mAdview.loadAd(adRequest);
 
 
         Button backToList = v.findViewById(R.id.backtodevicelist);
