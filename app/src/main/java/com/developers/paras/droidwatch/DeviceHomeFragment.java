@@ -1,7 +1,9 @@
 package com.developers.paras.droidwatch;
 
 
-import android.app.ProgressDialog;
+import static android.content.Context.MODE_PRIVATE;
+
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -12,17 +14,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.icu.util.Calendar;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.ContactsContract;
 import android.provider.Telephony;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.telephony.PhoneStateListener;
 import android.telephony.SmsMessage;
 import android.telephony.TelephonyManager;
@@ -34,19 +31,20 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.UUID;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
-
-import static android.content.ContentValues.TAG;
-import static android.content.Context.MODE_PRIVATE;
 
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -56,15 +54,16 @@ public class DeviceHomeFragment extends Fragment {
     private int CALL_STATE_RING = 0;
     private int MESSAGE_STATE = 0;
     private String INCOMING_NUMBER = null;
-    private String INCOMING_MESSAGE_BODY =null;
-    private String INCOMING_MESSAGE_NUMBER =null;
+    private String INCOMING_MESSAGE_BODY = null;
+    private String INCOMING_MESSAGE_NUMBER = null;
 
-    TelephonyManager tmg=null;
-    CallStateListener callstate=null;
-    private RewardedVideoAd mRewardedVideoAd;
+    TelephonyManager tmg = null;
+    CallStateListener callstate = null;
+    private InterstitialAd mInterstitialAd;
 
     View v;
-    Context con=null;
+    Context con = null;
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -81,7 +80,7 @@ public class DeviceHomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v=inflater.inflate(R.layout.fragment_device_home, container, false);
+        v = inflater.inflate(R.layout.fragment_device_home, container, false);
         return v;
     }
 
@@ -91,16 +90,24 @@ public class DeviceHomeFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         String admob_reward_id = getResources().getString(R.string.admob_reward);
 
-        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(con);
-        mRewardedVideoAd.loadAd(admob_reward_id,
-                new AdRequest.Builder()
-                        .addTestDevice("038E382011FDA83824D4A2F832132730")
-                        .build());
+        AdRequest adRequest = new AdRequest.Builder().build();
+        InterstitialAd.load(con, admob_reward_id, adRequest, new InterstitialAdLoadCallback() {
+            @Override
+            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                super.onAdFailedToLoad(loadAdError);
 
+            }
 
-        SharedPreferences sp = con.getSharedPreferences("device_info",MODE_PRIVATE);
-        final String address = sp.getString("hardware_address",null);
-        final String name = sp.getString("device_name",null);
+            @Override
+            public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                super.onAdLoaded(interstitialAd);
+                mInterstitialAd = interstitialAd;
+            }
+        });
+
+        SharedPreferences sp = con.getSharedPreferences("device_info", MODE_PRIVATE);
+        final String address = sp.getString("hardware_address", null);
+        final String name = sp.getString("device_name", null);
 
         final BluetoothDevice device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address);
 
@@ -108,10 +115,10 @@ public class DeviceHomeFragment extends Fragment {
         final ConnectThread conthread = new ConnectThread(device);
 
 
-        TelephonyManager  tm = (TelephonyManager) con.getSystemService(Context.TELEPHONY_SERVICE);
-        tmg=tm;
+        TelephonyManager tm = (TelephonyManager) con.getSystemService(Context.TELEPHONY_SERVICE);
+        tmg = tm;
         CallStateListener callStateListener = new CallStateListener();
-        callstate=callStateListener;
+        callstate = callStateListener;
         tm.listen(callStateListener, PhoneStateListener.LISTEN_CALL_STATE);
 
         IntentFilter filter = new IntentFilter();
@@ -121,7 +128,6 @@ public class DeviceHomeFragment extends Fragment {
         con.registerReceiver(msgReceiver, filter);
 
 
-
         final Button disconnect = (Button) v.findViewById(R.id.disconnect);
         final TextView device_name = (TextView) v.findViewById(R.id.device_name);
         final TextView device_status = (TextView) v.findViewById(R.id.device_status);
@@ -129,27 +135,24 @@ public class DeviceHomeFragment extends Fragment {
         Button reconnect = (Button) v.findViewById(R.id.reconnect);
 
 
-
         //Trying to connect with bluetooth device
         conthread.run();
 
 
         // Setting the name on the TextView
-        device_name.setText("Name : "+name);
+        device_name.setText("Name : " + name);
 
         // Setting the Status on the TextView
-        if(!conthread.getStatus())
-        {
+        if (!conthread.getStatus()) {
             device_status.setText("Status : Not Connected");
-            Log.d("mybt","Status not connected");
+            Log.d("mybt", "Status not connected");
 
 
-        } else if(conthread.getStatus())
-        {
+        } else if (conthread.getStatus()) {
             device_status.setText("Status : Connected");
-            Log.d("mybt","Status connected");
+            Log.d("mybt", "Status connected");
 
-            BackgroundTask backgroundtask= new BackgroundTask(device_status,device_data,conthread);
+            BackgroundTask backgroundtask = new BackgroundTask(device_status, device_data, conthread);
             backgroundtask.execute();
 
         }
@@ -159,7 +162,7 @@ public class DeviceHomeFragment extends Fragment {
         reconnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               conthread.run();
+                conthread.run();
             }
         });
 
@@ -172,13 +175,14 @@ public class DeviceHomeFragment extends Fragment {
                 conthread.setStatus(false);
                 device_status.setText("Status : Not Connected");
 
-                SharedPreferences sp = con.getSharedPreferences("device_info",MODE_PRIVATE);
+                SharedPreferences sp = con.getSharedPreferences("device_info", MODE_PRIVATE);
                 SharedPreferences.Editor et = sp.edit();
                 et.clear();
 
-                if (mRewardedVideoAd.isLoaded()) {
-                    mRewardedVideoAd.show();
+                if(mInterstitialAd != null){
+                    mInterstitialAd.show((Activity) con);
                 }
+
                 //******SENDING CONTROL BACK TO DEVICE LIST*************
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.device_list_layout, new FeedbackDialogFragment());
@@ -187,28 +191,16 @@ public class DeviceHomeFragment extends Fragment {
         });
 
 
-
-    }
-    @Override
-    public void onResume() {
-        mRewardedVideoAd.resume(con);
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        mRewardedVideoAd.pause(con);
-        super.onPause();
     }
 
     class BackgroundTask extends AsyncTask<Void, Void, Void> {
 
         TextView device_status = null;
-        TextView device_data=null;
-        ConnectThread conthread=null;
+        TextView device_data = null;
+        ConnectThread conthread = null;
 
         public BackgroundTask(TextView status, TextView data, ConnectThread connect) {
-            device_status= status;
+            device_status = status;
             device_data = data;
             conthread = connect;
         }
@@ -242,54 +234,49 @@ public class DeviceHomeFragment extends Fragment {
                     try {
                         Thread.sleep(1000);
 
-                        if(CALL_STATE_RING==1)
-                        {
-                            Log.d("mybt","Phone is ringing");
+                        if (CALL_STATE_RING == 1) {
+                            Log.d("mybt", "Phone is ringing");
                         }
 
-                        byte[] byte_data ;
+                        byte[] byte_data;
                         //Retrieving current time
                         java.util.Calendar c = java.util.Calendar.getInstance();
                         int hh = c.get(java.util.Calendar.HOUR);
                         int mm = c.get(java.util.Calendar.MINUTE);
                         int ss = c.get(java.util.Calendar.SECOND);
-                        int pm= c.get(java.util.Calendar.AM_PM);
-                        if(hh==0&&pm==1)
-                        {
-                            hh=12;
+                        int pm = c.get(java.util.Calendar.AM_PM);
+                        if (hh == 0 && pm == 1) {
+                            hh = 12;
                         }
-                        Log.d("mybt","PM = "+pm);
+                        Log.d("mybt", "PM = " + pm);
                         //Retrieving call information
-                        String incomingName=getContactName(con,INCOMING_NUMBER);
+                        String incomingName = getContactName(con, INCOMING_NUMBER);
                         //sending data to the watch
-                        String dataUrl = hh+":"+mm+":"+ss+":"+pm+"\0"+CALL_STATE_RING+"\0"+incomingName+"\0"+INCOMING_NUMBER+"\0"+MESSAGE_STATE+"\0"+INCOMING_MESSAGE_NUMBER+"\0"+INCOMING_MESSAGE_BODY+"\0";
-                        Log.d("mybt","Call state : "+CALL_STATE_RING+" Name : "+incomingName+" Num : "+INCOMING_NUMBER);
-                        Log.d("mybt","Message received :"+MESSAGE_STATE+" "+INCOMING_MESSAGE_NUMBER+" "+INCOMING_MESSAGE_BODY);
+                        String dataUrl = hh + ":" + mm + ":" + ss + ":" + pm + "\0" + CALL_STATE_RING + "\0" + incomingName + "\0" + INCOMING_NUMBER + "\0" + MESSAGE_STATE + "\0" + INCOMING_MESSAGE_NUMBER + "\0" + INCOMING_MESSAGE_BODY + "\0";
+                        Log.d("mybt", "Call state : " + CALL_STATE_RING + " Name : " + incomingName + " Num : " + INCOMING_NUMBER);
+                        Log.d("mybt", "Message received :" + MESSAGE_STATE + " " + INCOMING_MESSAGE_NUMBER + " " + INCOMING_MESSAGE_BODY);
                         byte_data = dataUrl.getBytes();
                         connectedThread.write(byte_data);
-                        if(MESSAGE_STATE==1)
-                        {
-                            MESSAGE_STATE=0;
-                            INCOMING_MESSAGE_NUMBER=null;
-                            INCOMING_MESSAGE_BODY=null;
+                        if (MESSAGE_STATE == 1) {
+                            MESSAGE_STATE = 0;
+                            INCOMING_MESSAGE_NUMBER = null;
+                            INCOMING_MESSAGE_BODY = null;
                         }
 
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    if(!connectedThread.getWriteSocket().isConnected())
-                    {
-                        Log.d("mybt","Disconnected during transmission");
+                    if (!connectedThread.getWriteSocket().isConnected()) {
+                        Log.d("mybt", "Disconnected during transmission");
                         break;
                     }
 
                 }
                 CALL_STATE_RING = 0;
-                MESSAGE_STATE=0;
+                MESSAGE_STATE = 0;
                 INCOMING_NUMBER = null;
-                INCOMING_MESSAGE_BODY =null;
-                INCOMING_MESSAGE_NUMBER =null;
-
+                INCOMING_MESSAGE_BODY = null;
+                INCOMING_MESSAGE_NUMBER = null;
 
 
             } catch (InterruptedException e) {
@@ -310,11 +297,14 @@ public class DeviceHomeFragment extends Fragment {
             return null;
         }
         String contactName = "Unknown";
-        if(cursor.moveToFirst()) {
-            contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+        if (cursor.moveToFirst()) {
+            int index = cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME);
+            if (index > 0) {
+                contactName = cursor.getString(index);
+            }
         }
 
-        if(!cursor.isClosed()) {
+        if (!cursor.isClosed()) {
             cursor.close();
         }
 
@@ -330,13 +320,13 @@ public class DeviceHomeFragment extends Fragment {
             switch (state) {
                 case TelephonyManager.CALL_STATE_RINGING:
                     // called when someone is ringing to this phone
-                    CALL_STATE_RING=1;
-                    INCOMING_NUMBER=incomingNumber;
+                    CALL_STATE_RING = 1;
+                    INCOMING_NUMBER = incomingNumber;
                     Toast.makeText(con, "Phone is ringing", Toast.LENGTH_SHORT).show();
 
                     break;
                 case TelephonyManager.CALL_STATE_IDLE:
-                    CALL_STATE_RING =0;
+                    CALL_STATE_RING = 0;
                     break;
             }
         }
@@ -348,10 +338,10 @@ public class DeviceHomeFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             if (Telephony.Sms.Intents.SMS_RECEIVED_ACTION.equals(intent.getAction())) {
                 for (SmsMessage smsMessage : Telephony.Sms.Intents.getMessagesFromIntent(intent)) {
-                    INCOMING_MESSAGE_BODY= smsMessage.getMessageBody();
+                    INCOMING_MESSAGE_BODY = smsMessage.getMessageBody();
                     INCOMING_MESSAGE_NUMBER = smsMessage.getOriginatingAddress();
-                    MESSAGE_STATE=1;
-                    Toast.makeText(context,"Message state "+MESSAGE_STATE, Toast.LENGTH_LONG).show();
+                    MESSAGE_STATE = 1;
+                    Toast.makeText(context, "Message state " + MESSAGE_STATE, Toast.LENGTH_LONG).show();
                 }
             }
         }
@@ -360,7 +350,6 @@ public class DeviceHomeFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mRewardedVideoAd.destroy(con);
         tmg.listen(callstate, PhoneStateListener.LISTEN_NONE);
         con.unregisterReceiver(msgReceiver);
 
@@ -376,8 +365,9 @@ class ConnectThread extends Thread {
     boolean getStatus() {
         return SUCCESS;
     }
+
     void setStatus(boolean value) {
-        SUCCESS=value;
+        SUCCESS = value;
     }
 
     BluetoothSocket getSocket() {

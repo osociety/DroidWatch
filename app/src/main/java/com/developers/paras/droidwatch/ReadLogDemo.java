@@ -1,6 +1,6 @@
 package com.developers.paras.droidwatch;
 
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import java.io.BufferedReader;
 import java.io.IOException;
