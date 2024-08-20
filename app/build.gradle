@@ -18,7 +18,7 @@ android {
     defaultConfig {
         applicationId "com.developers.paras.droidwatch"
         minSdkVersion 21
-        compileSdk 35
+        compileSdk 34
         targetSdkVersion 35
         versionCode 28
         versionName "28.0"
