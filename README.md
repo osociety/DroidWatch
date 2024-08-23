@@ -60,6 +60,10 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 This project maintains some code of conduct - see the [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) file for details
 
+## Privacy Policy 
+
+DroidWatch's privacy policy document - https://github.com/osociety/DroidWatch/wiki/Privacy-Policy
+
 ## Acknowledgments
 
 * [Tinkernut.com](http://www.tinkernut.com/portfolio/make-smartwatch-old-cell-phone-part-1/) - Inspiration.
